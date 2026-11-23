@@ -1,0 +1,25 @@
+# ExifTool binaries in fix_exif/ (NEVER commit executables or Perl runtime)
+fix_exif/exiftool.exe
+fix_exif/exiftool_files/
+
+# Dependencies & build outputs
+node_modules/
+dist/
+coverage/
+
+# Firebase Hosting & local state
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# Environment & local overrides
+.env
+.env.*
+*.local
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

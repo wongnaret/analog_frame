@@ -15,8 +15,8 @@ If your lab scans do not contain camera or film metadata, you can tag an entire 
 ## 2. Framing Photos in the Web App
 
 ### Step 1: Upload Photos
-- Tap **Add Photos** (or drag and drop files on desktop) to load one photo or an entire roll/carousel set.
-- Tap **Try with Sample Film Photo** on the welcome screen to test the workflow immediately with an EXIF-tagged sample frame.
+- Tap **Choose Photos** or **Add Photos** (or drag and drop files on desktop) to load one photo or an entire roll/carousel set.
+- Tap **Try Sample Film Photo** on the welcome screen to test the workflow immediately with an EXIF-tagged sample frame.
 
 ### Step 2: Choose a Frame Style (`Frame` Tab)
 Pick from 6 authentic analog templates:
@@ -27,7 +27,7 @@ Pick from 6 authentic analog templates:
 - **Half-Frame**: Vertical half-frame 35mm strip (ideal for Pentax 17 / Olympus Pen scans).
 - **Half-Frame Diptych**: Side-by-side 2-photo half-frame strip inside a single 35mm film frame. Select a second photo from your uploaded batch (or tap **Upload 2nd Photo**).
 
-Use the **90° Rotate** controls if a scan needs orientation adjustment, or click **Apply Style to All** to match every photo in your IG Carousel.
+Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orientation adjustment, or click **Apply to All** in the `Frame` tab to match every photo in your IG Carousel.
 
 ### Step 3: Set Instagram Ratio & Matte (`Canvas` Tab)
 - **Aspect Ratio**:
@@ -36,22 +36,23 @@ Use the **90° Rotate** controls if a scan needs orientation adjustment, or clic
   - `1:1 Square` (`2160 × 2160`) — Square feed post.
   - `9:16 Story` (`2160 × 3840`) — Instagram Stories & Reels cover.
 - **Outer Matte**: Switch between **White** (default), **Warm Paper**, and **Darkroom** black.
-- **Field Toggles**: Show or hide optional `Date`, `Artist`, `Frame No.`, and `Caption`.
+- **Field Toggles**: Show or hide optional `Shooting Date`, `Frame Number`, `Photographer / Artist`, and `Custom Caption`.
+- Tap **Apply to All** to apply the ratio, matte, and field visibility across all uploaded photos.
 
 ### Step 4: Review & Edit EXIF Metadata (`Metadata` Tab)
 - Detected EXIF values populate automatically.
-- Fill or adjust `Camera`, `Lens`, `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Date`, `Artist`, `Frame No.`, and `Caption`.
-- Previously used gear is saved locally in your browser under **Saved Gear** for one-tap reuse.
-- Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Film Stock`, `ISO`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
+- Fill or adjust `Camera`, `Lens`, `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Shooting Date`, `Artist / Credit`, `Frame No.`, and `Custom Caption`.
+- Previously used gear is saved locally in your browser (or tap **Save Gear** manually) as quick-pick chips under `Camera`, `Lens`, and `Film Stock`.
+- Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Film Stock`, `ISO / EI`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
 
 ### Step 5: Export for Instagram (`Export` Tab)
-- Choose **JPEG (95%)** *(recommended)* or **PNG**.
+- Choose **JPEG (95%)** *(recommended)* or **PNG (Lossless)**.
 - Keep **Preserve EXIF in JPEG** enabled so saved photos retain their original shooting date and camera/film tags in Apple Photos or Google Photos.
 - **Single Photo**:
-  - On mobile (iOS/Android), tap **Save / Share Photo** to open the native share sheet and tap **Save Image**.
-  - On desktop, click **Save / Share Photo** or **Download File**.
+  - On mobile (iOS/Android), tap **Save / Share Current Frame** to open the native share sheet and tap **Save Image**.
+  - On desktop, click **Save / Share Current Frame** or **Download File Directly**.
 - **Batch Carousel**:
-  - Tap **Export All as ZIP** to render every photo in the queue at full resolution (`2160px` width) and download a single `.zip` archive.
+  - Tap **Export All N Photos as ZIP** to render every photo in the queue at full resolution (`2160px` width) and download a single `.zip` archive.
 
 ---
 

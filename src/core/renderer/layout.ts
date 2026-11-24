@@ -15,6 +15,7 @@ export interface CanvasLayout {
   outerRect: Rect;
   frameRegion: Rect;
   footerRegion: Rect;
+  watermarkRegion: Rect;
 }
 
 export function getRotatedDimensions(
@@ -61,25 +62,45 @@ export function computeCanvasLayout(
   const height = Math.round(preset.height * scale);
 
   const sideMargin = Math.round(width * 0.068);
-  const topMargin = Math.round(height * (aspectRatioId === '9:16' ? 0.08 : 0.058));
-  const bottomMargin = Math.round(height * (aspectRatioId === '9:16' ? 0.075 : 0.042));
+  const topMargin = Math.round(height * (aspectRatioId === '9:16' ? 0.072 : 0.052));
+  const watermarkHeight = Math.round(54 * scale);
+  const watermarkBottomPad = Math.round(14 * scale);
 
   const footerHeight = usesCustomFooter
-    ? Math.round(height * 0.015)
-    : Math.round(Math.max(210 * scale, height * 0.115));
+    ? 0
+    : Math.round(Math.max(300 * scale, height * 0.132));
+
+  const frameFooterGap = usesCustomFooter ? 0 : Math.round(18 * scale);
+  const footerWatermarkGap = Math.round(14 * scale);
 
   const frameRegion: Rect = {
     x: sideMargin,
     y: topMargin,
     width: width - sideMargin * 2,
-    height: Math.max(100, height - topMargin - bottomMargin - footerHeight),
+    height: Math.max(
+      100,
+      height -
+        topMargin -
+        footerHeight -
+        watermarkHeight -
+        watermarkBottomPad -
+        frameFooterGap -
+        footerWatermarkGap,
+    ),
   };
 
   const footerRegion: Rect = {
     x: sideMargin,
-    y: frameRegion.y + frameRegion.height + Math.round(14 * scale),
+    y: frameRegion.y + frameRegion.height + frameFooterGap,
     width: width - sideMargin * 2,
-    height: Math.max(0, height - (frameRegion.y + frameRegion.height) - bottomMargin),
+    height: footerHeight,
+  };
+
+  const watermarkRegion: Rect = {
+    x: sideMargin,
+    y: height - watermarkHeight - watermarkBottomPad,
+    width: width - sideMargin * 2,
+    height: watermarkHeight,
   };
 
   return {
@@ -89,6 +110,7 @@ export function computeCanvasLayout(
     outerRect: { x: 0, y: 0, width, height },
     frameRegion,
     footerRegion,
+    watermarkRegion,
   };
 }
 

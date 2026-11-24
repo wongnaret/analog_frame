@@ -4,9 +4,12 @@ import { DEFAULT_ASPECT_RATIO_ID } from '../core/presets/aspectRatios';
 import { inferIsoFromFilmStock } from '../core/presets/filmStocks';
 import {
   loadGearHistory,
+  loadSavedWatermarkText,
   recordMetadataInGearHistory,
+  saveWatermarkText,
 } from '../core/presets/gearStorage';
 import { DEFAULT_MATTE_ID } from '../core/presets/mattePalettes';
+import { DEFAULT_WATERMARK_TEXT } from '../core/renderer/typography';
 import { DEFAULT_TEMPLATE_ID } from '../core/templates/registry';
 import type {
   ExportOptions,
@@ -116,11 +119,15 @@ export function useAnalogFrameStore() {
           photosRef.current[0]?.settings.aspectRatioId ?? DEFAULT_ASPECT_RATIO_ID;
         const defaultMatte =
           photosRef.current[0]?.settings.matteId ?? DEFAULT_MATTE_ID;
+        const defaultWatermark =
+          photosRef.current[0]?.settings.watermarkText ??
+          loadSavedWatermarkText(DEFAULT_WATERMARK_TEXT);
         const defaultVisibility = photosRef.current[0]?.settings.visibility ?? {
           showDate: true,
           showArtist: false,
           showFrameNumber: true,
           showCaption: false,
+          showWatermark: true,
         };
 
         const loadedItems: PhotoItem[] = [];
@@ -157,6 +164,7 @@ export function useAnalogFrameStore() {
                 matteId: defaultMatte,
                 rotation: 0,
                 visibility: { ...defaultVisibility },
+                watermarkText: defaultWatermark,
                 diptychPartnerId: null,
               },
             });
@@ -239,6 +247,9 @@ export function useAnalogFrameStore() {
 
   const updateSettings = useCallback(
     (id: string, patch: Partial<FrameSettings>) => {
+      if (patch.watermarkText !== undefined) {
+        saveWatermarkText(patch.watermarkText);
+      }
       setPhotos((prev) =>
         prev.map((item) =>
           item.id === id
@@ -322,6 +333,7 @@ export function useAnalogFrameStore() {
           aspectRatioId: source.settings.aspectRatioId,
           matteId: source.settings.matteId,
           visibility: { ...source.settings.visibility },
+          watermarkText: source.settings.watermarkText,
         },
       }));
     });

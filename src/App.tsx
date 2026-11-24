@@ -222,6 +222,9 @@ export function App() {
                       },
                     })
                   }
+                  onChangeWatermarkText={(watermarkText) =>
+                    store.updateSettings(selectedPhoto.id, { watermarkText })
+                  }
                   onApplyCanvasToAll={() =>
                     store.applyCanvasToAll(selectedPhoto.id)
                   }

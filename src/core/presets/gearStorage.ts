@@ -1,6 +1,7 @@
 import type { GearHistory, PhotoMetadata } from '../types';
 
 const STORAGE_KEY = 'analog_frame_gear_history_v1';
+const WATERMARK_STORAGE_KEY = 'analog_frame_watermark_text_v1';
 const MAX_ITEMS_PER_LIST = 12;
 
 const EMPTY_HISTORY: GearHistory = {
@@ -64,4 +65,31 @@ export function recordMetadataInGearHistory(
   };
   saveGearHistory(next);
   return next;
+}
+
+export function loadSavedWatermarkText(fallback: string): string {
+  try {
+    if (typeof localStorage === 'undefined') return fallback;
+    const saved = localStorage.getItem(WATERMARK_STORAGE_KEY);
+    if (saved !== null && saved.trim().length > 0) {
+      return saved;
+    }
+    return fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveWatermarkText(text: string): void {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const clean = text.trim();
+    if (clean.length > 0) {
+      localStorage.setItem(WATERMARK_STORAGE_KEY, clean);
+    } else {
+      localStorage.removeItem(WATERMARK_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage quota or private-mode errors
+  }
 }

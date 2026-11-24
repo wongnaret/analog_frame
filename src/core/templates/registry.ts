@@ -7,12 +7,12 @@ import { halfFrameSingleTemplate } from './halfFrameSingle';
 import { minimalMatteTemplate } from './minimalMatte';
 import type { FrameTemplate } from './types';
 
-export const DEFAULT_TEMPLATE_ID: TemplateId = '35mm-sprocket';
+export const DEFAULT_TEMPLATE_ID: TemplateId = 'minimal-matte';
 
 export const TEMPLATES: FrameTemplate[] = [
+  minimalMatteTemplate,
   filmStrip35mmTemplate,
   filmRebateTemplate,
-  minimalMatteTemplate,
   editorialCardTemplate,
   halfFrameSingleTemplate,
   halfFrameDiptychTemplate,
@@ -20,6 +20,6 @@ export const TEMPLATES: FrameTemplate[] = [
 
 export function getTemplate(id: TemplateId): FrameTemplate {
   return (
-    TEMPLATES.find((template) => template.id === id) ?? filmStrip35mmTemplate
+    TEMPLATES.find((template) => template.id === id) ?? minimalMatteTemplate
   );
 }

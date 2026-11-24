@@ -5,7 +5,8 @@ A lean, 100% browser-side, mobile-first PWA for framing scanned analog film phot
 ## Highlights
 - **Zero Backend / Free Hosting**: Runs entirely in the browser using HTML5 Canvas 2D; ready to deploy on Firebase Hosting's free Spark tier.
 - **Instagram Aspect Ratios (2× High-Res)**: Defaults to **`3:4` Profile Grid (`2160 × 2880`)**, with `4:5` Feed (`2160 × 2700`), `1:1` Square (`2160 × 2160`), and `9:16` Story (`2160 × 3840`).
-- **6 Analog Frame Templates**: `35mm Film Strip`, `Film Rebate`, `Minimal Matte`, `Editorial Spec Card`, `Half-Frame Single`, and `Half-Frame Diptych`.
+- **6 Analog Frame Templates**: Defaults to **`Minimal Matte`**, plus `35mm Film Strip`, `Film Rebate`, `Editorial Spec Card`, `Half-Frame Single`, and `Half-Frame Diptych`.
+- **Split Typography & Footer Watermark**: Large, mobile-readable footer placing `Camera` + `Lens` on the left and `Film Stock` + `EI / Date / Frame` on the right, paired with a subtle editable footer watermark (`ANALOG FRAME` by default, remembered in `localStorage`).
 - **No-Crop Fit + Rotation**: Keeps your full scanned frame intact with 90° rotation support.
 - **EXIF Read & Re-Inject**: Reads `Make`, `Model`, `LensModel`, `ISO`, `DateTimeOriginal`, `Artist`, and `Film: <stock> | EI: <iso>` tags, lets you fill missing fields with curated film presets & saved gear, and writes key EXIF back into exported JPEGs so photo libraries preserve shooting dates.
 - **Mobile-First PWA**: Installable on iOS/Android, works offline, supports native **Web Share** ("Save Image") and **Batch ZIP** export.

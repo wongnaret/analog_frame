@@ -66,8 +66,19 @@ export function FrameControls({
                     : 'var(--border-subtle)',
                 }}
               >
-                <div className="mb-2">
+                <div className="mb-2 flex w-full items-start justify-between gap-2">
                   <TemplateIcon templateId={template.id} active={active} />
+                  {template.id === 'minimal-matte' && (
+                    <span
+                      className="font-mono-tech rounded px-1.5 py-0.5 text-[9px] uppercase"
+                      style={{
+                        backgroundColor: 'var(--bg-surface)',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
+                      Default
+                    </span>
+                  )}
                 </div>
                 <div className="text-xs font-semibold">{template.name}</div>
                 <div

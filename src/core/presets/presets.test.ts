@@ -6,7 +6,12 @@ import {
 } from './aspectRatios';
 import { getFilmAccentColor, inferIsoFromFilmStock } from './filmStocks';
 import { DEFAULT_MATTE_ID, getMattePalette } from './mattePalettes';
-import { loadGearHistory, recordMetadataInGearHistory } from './gearStorage';
+import {
+  loadGearHistory,
+  loadSavedWatermarkText,
+  recordMetadataInGearHistory,
+  saveWatermarkText,
+} from './gearStorage';
 
 describe('aspectRatios preset', () => {
   it('uses 3:4 Profile Grid (2160 x 2880) as default', () => {
@@ -67,5 +72,15 @@ describe('gearStorage', () => {
     expect(loaded.lenses).toEqual(['35mm Summicron', '25mm F3.5']);
     expect(loaded.filmStocks).toEqual(['Kodak Portra 400']);
     expect(loaded.artists).toEqual(['W. Studio']);
+  });
+
+  it('persists and clears custom watermark text with fallback', () => {
+    expect(loadSavedWatermarkText('ANALOG FRAME')).toBe('ANALOG FRAME');
+
+    saveWatermarkText('  @film.studio  ');
+    expect(loadSavedWatermarkText('ANALOG FRAME')).toBe('@film.studio');
+
+    saveWatermarkText('   ');
+    expect(loadSavedWatermarkText('ANALOG FRAME')).toBe('ANALOG FRAME');
   });
 });

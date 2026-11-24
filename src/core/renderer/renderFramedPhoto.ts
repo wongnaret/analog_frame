@@ -3,7 +3,7 @@ import { getTemplate } from '../templates/registry';
 import type { RenderableImage } from '../templates/types';
 import type { FrameSettings, PhotoMetadata } from '../types';
 import { computeCanvasLayout } from './layout';
-import { drawOuterTypography } from './typography';
+import { drawFooterWatermark, drawOuterTypography } from './typography';
 
 export interface RenderFramedPhotoParams {
   primaryImage: RenderableImage;
@@ -68,6 +68,16 @@ export function renderFramedPhoto({
       scale,
     );
   }
+
+  // Layer 4: Subtle footer watermark
+  drawFooterWatermark(
+    ctx,
+    layout.watermarkRegion,
+    settings.watermarkText,
+    settings.visibility.showWatermark,
+    palette,
+    scale,
+  );
 
   return canvas;
 }

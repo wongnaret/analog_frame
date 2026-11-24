@@ -16,7 +16,7 @@ export const editorialCardTemplate: FrameTemplate = {
     );
 
     const cardPad = Math.round(36 * scale);
-    const specBlockH = Math.round(330 * scale);
+    const specBlockH = Math.round(380 * scale);
 
     const innerPhotoBox = {
       x: frameRegion.x + cardPad,
@@ -68,14 +68,14 @@ export const editorialCardTemplate: FrameTemplate = {
     ctx.fillStyle = palette.primaryText;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
-    let titleSize = 40 * scale;
+    let titleSize = 52 * scale;
     ctx.font = `700 ${titleSize}px "Space Grotesk", sans-serif`;
-    while (titleSize > 20 * scale && ctx.measureText(headline).width > specWidth) {
+    while (titleSize > 24 * scale && ctx.measureText(headline).width > specWidth) {
       titleSize -= 2;
       ctx.font = `700 ${titleSize}px "Space Grotesk", sans-serif`;
     }
     ctx.fillText(headline, specLeft, cursorY, specWidth);
-    cursorY += titleSize + 18 * scale;
+    cursorY += titleSize + 20 * scale;
 
     // 2-column spec rows
     const specs: Array<[string, string]> = [
@@ -94,8 +94,8 @@ export const editorialCardTemplate: FrameTemplate = {
       specs.push(['FRAME', `#${metadata.frameNumber.trim()}`]);
     }
 
-    const rowFontSize = Math.max(11, 21 * scale);
-    const rowStep = rowFontSize + 14 * scale;
+    const rowFontSize = Math.max(13, 28 * scale);
+    const rowStep = rowFontSize + 16 * scale;
     const colGap = 24 * scale;
     const colWidth = (specWidth - colGap) / 2;
 

@@ -20,9 +20,9 @@ If your lab scans do not contain camera or film metadata, you can tag an entire 
 
 ### Step 2: Choose a Frame Style (`Frame` Tab)
 Pick from 6 authentic analog templates:
+- **Minimal Matte** *(Default)*: Clean gallery presentation with subtle shadow and hairline border.
 - **35mm Strip**: Black 35mm film border with sprocket holes and film-brand edge markings.
 - **Film Rebate**: Clean black negative border with film-gate notches and no sprockets.
-- **Minimal Matte**: Gallery presentation with subtle shadow and hairline border.
 - **Editorial Card**: Archival spec card featuring bold typography directly under the scan.
 - **Half-Frame**: Vertical half-frame 35mm strip (ideal for Pentax 17 / Olympus Pen scans).
 - **Half-Frame Diptych**: Side-by-side 2-photo half-frame strip inside a single 35mm film frame. Select a second photo from your uploaded batch (or tap **Upload 2nd Photo**).
@@ -36,7 +36,7 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
   - `1:1 Square` (`2160 × 2160`) — Square feed post.
   - `9:16 Story` (`2160 × 3840`) — Instagram Stories & Reels cover.
 - **Outer Matte**: Switch between **White** (default), **Warm Paper**, and **Darkroom** black.
-- **Field Toggles**: Show or hide optional `Shooting Date`, `Frame Number`, `Photographer / Artist`, and `Custom Caption`.
+- **Field Toggles & Watermark**: Show or hide optional `Shooting Date`, `Frame Number`, `Photographer / Artist`, `Custom Caption`, and `Footer Watermark` (defaults to `ANALOG FRAME`; edit **Watermark Text** to customize it and your latest value is remembered automatically in browser storage).
 - Tap **Apply to All** to apply the ratio, matte, and field visibility across all uploaded photos.
 
 ### Step 4: Review & Edit EXIF Metadata (`Metadata` Tab)

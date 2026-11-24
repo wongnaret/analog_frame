@@ -58,6 +58,7 @@ export interface MetadataVisibility {
   showArtist: boolean;
   showFrameNumber: boolean;
   showCaption: boolean;
+  showWatermark: boolean;
 }
 
 export interface FrameSettings {
@@ -66,6 +67,7 @@ export interface FrameSettings {
   matteId: MattePaletteId;
   rotation: RotationDegrees;
   visibility: MetadataVisibility;
+  watermarkText: string;
   diptychPartnerId: string | null;
 }
 

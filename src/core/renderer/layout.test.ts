@@ -1,14 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { computeCanvasLayout, fitRectInBox, getRotatedDimensions } from './layout';
-import { formatFooterLines } from './typography';
+import { formatSplitFooterLines } from './typography';
 
 describe('layout geometry', () => {
-  it('defaults to 3:4 (2160 x 2880) at full scale', () => {
+  it('defaults to 3:4 (2160 x 2880) at full scale with footer and watermark regions', () => {
     const layout = computeCanvasLayout('3:4', 1, false);
     expect(layout.width).toBe(2160);
     expect(layout.height).toBe(2880);
     expect(layout.frameRegion.width).toBeGreaterThan(0);
-    expect(layout.footerRegion.height).toBeGreaterThan(0);
+    expect(layout.footerRegion.height).toBeGreaterThanOrEqual(300);
+    expect(layout.watermarkRegion.height).toBeGreaterThan(0);
+    expect(layout.watermarkRegion.y).toBeGreaterThan(
+      layout.footerRegion.y + layout.footerRegion.height,
+    );
   });
 
   it('fits landscape, portrait, and square images inside frame box without cropping', () => {
@@ -35,12 +39,12 @@ describe('layout geometry', () => {
   });
 });
 
-describe('formatFooterLines', () => {
-  it('omits empty fields cleanly and respects visibility toggles', () => {
-    const lines = formatFooterLines(
+describe('formatSplitFooterLines', () => {
+  it('places camera + lens on the left and film stock + specs on the right', () => {
+    const lines = formatSplitFooterLines(
       {
         camera: 'Pentax 17',
-        lens: '',
+        lens: '25mm F3.5',
         filmStock: 'Ilford HP5 Plus 400',
         iso: '400',
         date: '2026-09-13',
@@ -51,15 +55,46 @@ describe('formatFooterLines', () => {
       },
       {
         showDate: true,
-        showArtist: false,
+        showArtist: true,
         showFrameNumber: true,
-        showCaption: false,
+        showCaption: true,
+        showWatermark: true,
       },
     );
 
-    expect(lines.primaryLine).toBe('PENTAX 17');
-    expect(lines.filmLine).toBe('ILFORD HP5 PLUS 400  ·  EI 400');
-    expect(lines.detailLine).toBe('2026-09-13  ·  #04A');
+    expect(lines.leftPrimary).toBe('PENTAX 17');
+    expect(lines.leftSecondary).toBe('25mm F3.5  ·  Edd');
+    expect(lines.rightPrimary).toBe('ILFORD HP5 PLUS 400');
+    expect(lines.rightSecondary).toBe('EI 400  ·  2026-09-13  ·  #04A');
+    expect(lines.captionLine).toBe('Wedding day');
+  });
+
+  it('promotes lens to leftPrimary when camera is empty and respects hidden toggles', () => {
+    const lines = formatSplitFooterLines(
+      {
+        camera: '',
+        lens: '50mm f/1.8',
+        filmStock: 'Kodak Portra 400',
+        iso: '400',
+        date: '2026-09-13',
+        exifDateTime: '2026:09:13 12:00:00',
+        artist: 'Edd',
+        frameNumber: '04A',
+        caption: 'Hidden caption',
+      },
+      {
+        showDate: false,
+        showArtist: false,
+        showFrameNumber: false,
+        showCaption: false,
+        showWatermark: true,
+      },
+    );
+
+    expect(lines.leftPrimary).toBe('50MM F/1.8');
+    expect(lines.leftSecondary).toBe('');
+    expect(lines.rightPrimary).toBe('KODAK PORTRA 400');
+    expect(lines.rightSecondary).toBe('EI 400');
     expect(lines.captionLine).toBe('');
   });
 });

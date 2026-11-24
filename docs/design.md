@@ -67,3 +67,4 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
   - Thumb-friendly bottom tab bar (`Frame`, `Canvas`, `Metadata`, `Export`).
   - Batch tools: **Apply Style to All**, **Apply Canvas to All**, **Apply Gear to All**, and **Export All as ZIP**.
   - Mobile-native **Web Share API** ("Save / Share Photo") to save directly to Apple Photos / Google Photos with key EXIF preserved.
+  - Non-intrusive **Cookie & Browser Storage Consent** banner (`Accept Cookies` / `Essential Only`) positioned cleanly above the mobile tab bar.

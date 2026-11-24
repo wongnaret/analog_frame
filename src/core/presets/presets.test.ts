@@ -12,6 +12,7 @@ import {
   recordMetadataInGearHistory,
   saveWatermarkText,
 } from './gearStorage';
+import { loadCookieConsent, saveCookieConsent } from './cookieConsent';
 
 describe('aspectRatios preset', () => {
   it('uses 3:4 Profile Grid (2160 x 2880) as default', () => {
@@ -84,5 +85,25 @@ describe('gearStorage', () => {
 
     saveWatermarkText('   ');
     expect(loadSavedWatermarkText('ANALOG FRAME')).toBe('ANALOG FRAME');
+  });
+});
+
+describe('cookieConsent', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.cookie = 'analog_frame_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  });
+
+  it('returns null initially and persists accepted or essential choice', () => {
+    expect(loadCookieConsent()).toBeNull();
+
+    saveCookieConsent('accepted');
+    expect(loadCookieConsent()).toBe('accepted');
+
+    localStorage.clear();
+    expect(loadCookieConsent()).toBe('accepted');
+
+    saveCookieConsent('essential');
+    expect(loadCookieConsent()).toBe('essential');
   });
 });

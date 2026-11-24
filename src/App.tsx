@@ -2,6 +2,7 @@ import { Download, Film, Sliders, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { CanvasControls } from './components/CanvasControls';
 import { CanvasPreview } from './components/CanvasPreview';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { EmptyUploadState } from './components/EmptyUploadState';
 import { ExportControls } from './components/ExportControls';
 import { FilmstripQueue } from './components/FilmstripQueue';
@@ -326,6 +327,8 @@ export function App() {
           })}
         </nav>
       )}
+      {/* Cookie & Local Storage Consent */}
+      <CookieConsentBanner hasPhotos={Boolean(selectedPhoto)} />
     </div>
   );
 }

@@ -81,9 +81,8 @@ export function EmptyUploadState({
           className="mx-auto mt-2 max-w-md text-sm"
           style={{ color: 'var(--text-secondary)' }}
         >
-          Upload one frame or an entire IG Carousel set. EXIF metadata from{' '}
-          <code className="font-mono-tech text-xs">fix_exif.ps1</code> is read
-          automatically inside your browser.
+          Upload one frame or an entire IG Carousel set. EXIF camera, lens,
+          film, and scanner metadata is read automatically inside your browser.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -123,7 +122,7 @@ export function EmptyUploadState({
           {
             icon: Camera,
             title: 'EXIF Read & Write',
-            desc: 'Parses Camera, Lens, Film & EI, and re-injects EXIF on JPEG export.',
+            desc: 'Parses Camera, Lens, Film & ISO, and re-injects EXIF on JPEG export.',
           },
           {
             icon: Upload,

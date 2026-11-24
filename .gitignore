@@ -16,6 +16,7 @@ firebase-debug.*.log
 # Environment & local overrides
 .env
 .env.*
+!.env.example
 *.local
 
 # OS & editor files

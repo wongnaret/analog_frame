@@ -40,17 +40,31 @@ npm run preview
 Because Analog Frame processes everything client-side, it only needs static file hosting on Firebase's free **Spark** tier (10 GB storage, 360 MB/day transfer).
 
 1. **Create a Firebase Project** in the [Firebase Console](https://console.firebase.google.com/) (no billing upgrade required).
-2. **Copy `.firebaserc.example` to `.firebaserc`** (note: `.firebaserc` is gitignored or can be kept local):
+2. **Configure `.env`** (`.env` is gitignored; `.env.example` is provided as a template):
    ```bash
-   cp .firebaserc.example .firebaserc
+   cp .env.example .env
    ```
-   Replace `"your-firebase-project-id"` with your real Firebase project ID.
+   Ensure `FIREBASE_PROJECT_ID` is set (default: `analog-frame`):
+   ```env
+   FIREBASE_PROJECT_ID=analog-frame
+   ```
 3. **Authenticate & Deploy**:
-   ```bash
-   firebase login
-   npm run build
-   firebase deploy --only hosting
+   First sign in once with `firebase login`, then run the deployment script for your OS:
+
+   **Windows (PowerShell)**:
+   ```powershell
+   .\deploy.ps1
    ```
+   *(Optional flags: `-ProjectId <id>`, `-SkipChecks`)*
+
+   **macOS / Linux / Git Bash**:
+   ```bash
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+   *(Optional flags: `--project <id>`, `--skip-checks`)*
+
+   Both scripts read `FIREBASE_PROJECT_ID` from `.env`, run `npm run typecheck`, `npm run test`, and `npm run build`, and then run `firebase deploy --only hosting --project <id>`.
 4. **Verify**:
-   - Open your `https://<your-project-id>.web.app` URL on desktop and mobile.
+   - Open `https://analog-frame.web.app` (or `https://<your-project-id>.web.app`) on desktop and mobile.
    - Verify PWA installability and offline support (handled by `sw.js` and `manifest.webmanifest` with `no-cache` headers configured in `firebase.json`).

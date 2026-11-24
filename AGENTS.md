@@ -6,7 +6,7 @@ These rules govern all development and AI-assisted work in this repository.
 - **100% Client-Side & Lean**: All image decoding, EXIF parsing, Canvas 2D framing, EXIF re-injection, and ZIP packaging run in the user's browser with zero backend dependencies. Keep bundle size and runtime memory lean (especially for mobile Safari/Chrome).
 - **English UI & Typography**: All web application UI copy, labels, and rendered frame typography must be in English.
 - **Film-First Aesthetic**: Respect original scanned film aspect ratios — fit photos cleanly inside frames without cropping by default, and keep typography subtle and authentic.
-- **Default Canvas**: `3:4` Profile Grid (`2160 × 2880`) on a crisp white outer matte with the `minimal-matte` frame template.
+- **Default Canvas**: `3:4` Profile Grid (`2160 × 2880`) on a crisp white outer matte with the `minimal-matte` frame template and `Noritsu HS-1800` default scanner.
 
 ## 2. Never Commit ExifTool Binaries
 - `fix_exif/exiftool.exe` and `fix_exif/exiftool_files/` MUST remain ignored in `.gitignore`.

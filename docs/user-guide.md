@@ -40,8 +40,8 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
 - Tap **Apply to All** to apply the ratio, matte, watermark, and field visibility across all uploaded photos.
 
 ### Step 4: Review & Edit EXIF Metadata (`Metadata` Tab)
-- Detected EXIF values populate automatically (including known film scanners from the EXIF `Software` tag).
-- Fill or adjust `Camera`, `Lens`, `Scanner` (with quick-pick presets such as `Frontier SP-3000` and `Noritsu HS-1800`), `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Shooting Date`, `Artist / Credit`, `Frame No.`, `Custom Caption`, and `Footer Watermark`.
+- Detected EXIF values populate automatically (including known film scanners from the EXIF `Software` tag; Noritsu `EZ Controller` tags normalize automatically to `Noritsu HS-1800`, and `Scanner` defaults to `Noritsu HS-1800` when unspecified).
+- Fill or adjust `Camera`, `Lens`, `Scanner` (defaults to `Noritsu HS-1800`, with quick-pick presets such as `Noritsu HS-1800` and `Frontier SP-3000`), `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Shooting Date`, `Artist / Credit`, `Frame No.`, `Custom Caption`, and `Footer Watermark`.
 - Previously used gear is saved locally in your browser (or tap **Save Gear** manually) as quick-pick chips under `Camera`, `Lens`, `Scanner`, and `Film Stock`.
 - Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Scanner`, `Film Stock`, `ISO / EI`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
 

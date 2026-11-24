@@ -41,10 +41,18 @@ describe('parseAnalogExif', () => {
     });
   });
 
-  it('detects known film scanners from Software tag and ignores non-scanner software', () => {
+  it('detects known film scanners from Software tag, normalizes EZ Controller, and ignores non-scanner software', () => {
     const frontier = parseAnalogExif({ Software: 'Frontier SP-3000' });
     expect(frontier.metadata.scanner).toBe('Frontier SP-3000');
     expect(frontier.detected.scanner).toBe(true);
+
+    const ez = parseAnalogExif({ Software: 'EZ Controller' });
+    expect(ez.metadata.scanner).toBe('Noritsu HS-1800');
+    expect(ez.detected.scanner).toBe(true);
+
+    const noritsuEz = parseAnalogExif({ Software: 'NORITSU KOKI EZ Controller' });
+    expect(noritsuEz.metadata.scanner).toBe('Noritsu HS-1800');
+    expect(noritsuEz.detected.scanner).toBe(true);
 
     const lightroom = parseAnalogExif({ Software: 'Adobe Lightroom' });
     expect(lightroom.metadata.scanner).toBe('');

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DEFAULT_SCANNER } from '../core/exif/parser';
 import { readExifFromFile } from '../core/exif/reader';
 import { DEFAULT_ASPECT_RATIO_ID } from '../core/presets/aspectRatios';
 import { inferIsoFromFilmStock } from '../core/presets/filmStocks';
@@ -155,6 +156,7 @@ export function useAnalogFrameStore() {
               exifDetected: exif.detected,
               metadata: {
                 ...exif.metadata,
+                scanner: exif.metadata.scanner || DEFAULT_SCANNER,
                 iso: inferredIso,
                 frameNumber: `${seqNum}A`,
               },

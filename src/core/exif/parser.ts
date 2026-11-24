@@ -130,13 +130,29 @@ export function buildExifFilmDescription(filmStock: string, iso: string): string
   return '';
 }
 
+export const DEFAULT_SCANNER = 'Noritsu HS-1800';
+
 const KNOWN_SCANNER_PATTERN =
   /noritsu|frontier|sp-?3000|sp-?2000|sp-?500|ez controller|qss|pakon|plustek|coolscan|flextight|imacon|epson|silverfast|vuescan/i;
+
+const NORITSU_GENERIC_PATTERN =
+  /(?:^|\b)(?:ez controller|noritsu(?:\s+koki)?)(?:\b|$)/i;
+const NORITSU_EXPLICIT_MODEL_PATTERN =
+  /\b(?:hs-\d+|ls-\d+|qss[-\s]?\d+|s-\d+)\b/i;
 
 function extractScannerFromSoftware(softwareRaw: unknown): string {
   const software = cleanString(softwareRaw);
   if (!software || /^analog frame$/i.test(software)) return '';
-  return KNOWN_SCANNER_PATTERN.test(software) ? software : '';
+  if (!KNOWN_SCANNER_PATTERN.test(software)) return '';
+
+  if (
+    NORITSU_GENERIC_PATTERN.test(software) &&
+    !NORITSU_EXPLICIT_MODEL_PATTERN.test(software)
+  ) {
+    return DEFAULT_SCANNER;
+  }
+
+  return software;
 }
 
 export function parseAnalogExif(

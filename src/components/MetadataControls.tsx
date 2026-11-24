@@ -6,7 +6,7 @@ import {
 import type { GearHistory, PhotoItem, PhotoMetadata } from '../core/types';
 import { WatermarkField } from './WatermarkField';
 
-const DEFAULT_SCANNER_PRESETS = ['Frontier SP-3000', 'Noritsu HS-1800', 'Plustek 8200i'];
+const DEFAULT_SCANNER_PRESETS = ['Noritsu HS-1800', 'Frontier SP-3000', 'Plustek 8200i'];
 
 interface MetadataControlsProps {
   photo: PhotoItem;

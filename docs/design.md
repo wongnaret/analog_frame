@@ -50,7 +50,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 ---
 
 ## 4. Metadata & Film Presets
-- **Primary Fields** (shown on frame): `Camera` (`Make` + `Model`), `Lens`, `Scanner`, `Film Stock`, `ISO`.
+- **Primary Fields** (shown on frame): `Camera` (`Make` + `Model`), `Lens`, `Scanner` (defaults to `Noritsu HS-1800`), `Film Stock`, `ISO`.
 - **Optional Toggle Fields**: `Date`, `Artist`, `Frame No.`, `Custom Caption`.
 - **EXIF Auto-Detection**: Automatically parses tags written by `fix_exif/fix_exif.ps1` (`Film: <stock> | EI: <iso>` inside `ImageDescription` / `UserComment` / `XMP:Description`) as well as standard camera EXIF.
 - **Quick-Fill & Gear Memory**:

@@ -3,6 +3,7 @@ import {
   FULL_FRAME_SPROCKET_COUNT,
   HALF_FRAME_SPROCKET_COUNT,
   computeSprocketHoles,
+  getFilmEdgeCode,
 } from './drawFilmHelpers';
 import { DEFAULT_TEMPLATE_ID, getTemplate, TEMPLATES } from './registry';
 
@@ -58,5 +59,11 @@ describe('35mm sprocket geometry', () => {
     );
     expect(vert.holes).toHaveLength(4);
     expect(vert.holes[0].width).toBeGreaterThan(vert.holes[0].height);
+  });
+
+  it('maps film stocks to authentic outer edge rebate codes', () => {
+    expect(getFilmEdgeCode('Kodak Gold 200')).toBe('KODAK GB 200-7');
+    expect(getFilmEdgeCode('Ilford HP5 Plus 400')).toBe('ILFORD HP5 PLUS');
+    expect(getFilmEdgeCode('Kodak Portra 400')).toBe('KODAK PORTRA 400');
   });
 });

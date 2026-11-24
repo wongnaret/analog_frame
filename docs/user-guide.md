@@ -21,11 +21,11 @@ If your lab scans do not contain camera or film metadata, you can tag an entire 
 ### Step 2: Choose a Frame Style (`Frame` Tab)
 Pick from 6 authentic analog templates:
 - **Minimal Matte** *(Default)*: Clean gallery presentation with subtle shadow and hairline border.
-- **35mm Strip**: Black 35mm film border with sprocket holes and film-brand edge markings.
+- **35mm Strip**: Black 35mm film border with **8 rounded sprocket holes** per side and outer-margin film emulsion name, frame markers, and DX edge barcode.
 - **Film Rebate**: Clean black negative border with film-gate notches and no sprockets.
 - **Editorial Card**: Archival spec card featuring bold typography directly under the scan.
-- **Half-Frame**: Vertical half-frame 35mm strip (ideal for Pentax 17 / Olympus Pen scans).
-- **Half-Frame Diptych**: Side-by-side 2-photo half-frame strip inside a single 35mm film frame. Select a second photo from your uploaded batch (or tap **Upload 2nd Photo**).
+- **Half-Frame**: Authentic 35mm half-frame strip with **4 rounded sprocket holes** along the short edges (top/bottom on portrait scans).
+- **Half-Frame Diptych**: Side-by-side 2-photo half-frame strip inside a single **8-perforation** 35mm film frame (4 holes per frame), automatically numbering Frame 2 sequentially from Frame 1. Select a second photo from your uploaded batch (or tap **Upload 2nd Photo**).
 
 Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orientation adjustment, or click **Apply to All** in the `Frame` tab to match every photo in your IG Carousel.
 

@@ -91,24 +91,86 @@ function combineCameraName(makeRaw: unknown, modelRaw: unknown): string {
   return `${make} ${model}`;
 }
 
-function parseFilmAndEiFromText(text: string): { filmStock: string; ei: string } {
-  if (!text) return { filmStock: '', ei: '' };
+function parseFilmAndEiFromText(text: string): {
+  filmStock: string;
+  ei: string;
+  frameNumber: string;
+} {
+  if (!text) return { filmStock: '', ei: '', frameNumber: '' };
 
-  // Matches fix_exif.ps1 format: "Film: Ilford HP5 Plus 400 | EI: 400"
-  const pipeMatch = text.match(/Film:\s*([^|\r\n]+?)(?:\s*\|\s*EI:\s*(\d+))?$/im);
-  if (pipeMatch) {
-    return {
-      filmStock: pipeMatch[1].trim(),
-      ei: pipeMatch[2]?.trim() ?? '',
-    };
+  const filmMatch = text.match(/Film:\s*([^|\r\n]+)/i);
+  const eiMatch = text.match(/\bEI:\s*(\d+)/i);
+  const frameMatch = text.match(/\bFrame:\s*#?(\d{1,3}[A-Z]?)\b/i);
+
+  return {
+    filmStock: filmMatch ? filmMatch[1].trim() : '',
+    ei: eiMatch ? eiMatch[1].trim() : '',
+    frameNumber: frameMatch ? frameMatch[1].trim().toUpperCase() : '',
+  };
+}
+
+function normalizeFrameNumber(raw: unknown): string {
+  const clean = cleanString(raw).replace(/^#/, '').toUpperCase();
+  if (!clean) return '';
+  if (/^\d{1,3}[A-Z]?$/.test(clean)) {
+    return clean;
+  }
+  return '';
+}
+
+export function extractFrameNumberFromFileName(fileName: string): string {
+  const stem = fileName.replace(/\.[^.]+$/, '').trim();
+  if (!stem) return '';
+
+  // Explicit "frame_05A" or "frame-12"
+  const explicit = stem.match(/frame[-_\s]*0*(\d{1,2}[A-Z]?)\b/i);
+  if (explicit) {
+    return explicit[1].padStart(explicit[1].match(/[A-Z]/i) ? 3 : 2, '0').toUpperCase();
   }
 
-  const filmOnly = text.match(/Film:\s*([^\r\n|]+)/i);
-  const eiOnly = text.match(/\bEI:\s*(\d+)/i);
-  return {
-    filmStock: filmOnly ? filmOnly[1].trim() : '',
-    ei: eiOnly ? eiOnly[1].trim() : '',
-  };
+  // Standalone frame name like "05.jpg" or "17A.jpg"
+  if (/^\d{1,2}[A-Z]?$/i.test(stem)) {
+    return stem.toUpperCase();
+  }
+
+  // Avoid mistaking timestamps like "20260913_143005" for frame numbers
+  if (/(?:^|[-_])(?:19|20)\d{6}[-_]\d{6}$/.test(stem)) {
+    return '';
+  }
+
+  // Trailing separator frame number like "roll01_14A" or "4140_07"
+  const trailingSep = stem.match(/[-_](\d{1,3}[A-Z]?)$/i);
+  if (trailingSep) {
+    const token = trailingSep[1].toUpperCase();
+    // Ignore 3-digit tokens >= 100 unless 0-padded like 017
+    if (token.length <= 2 || /^0\d{2}[A-Z]?$/.test(token) || /^\d{1,2}[A-Z]$/.test(token)) {
+      return token.replace(/^0(\d{2}[A-Z]?)$/, '$1');
+    }
+  }
+
+  // Lab scan numeric filename (e.g. Noritsu/Frontier "000041400017.jpg" -> "17")
+  if (!/^(?:19|20)\d{6}/.test(stem)) {
+    const labMatch = stem.match(/^\d{6,10}?(\d{2}[A-Z]?)$/i);
+    if (labMatch) {
+      return labMatch[1].toUpperCase();
+    }
+  }
+
+  return '';
+}
+
+export function incrementFrameNumber(frameNumber: string): string {
+  const clean = frameNumber.trim().toUpperCase();
+  if (!clean) return '02A';
+
+  const match = clean.match(/^(\d+)([A-Z]*)$/);
+  if (!match) return clean;
+
+  const numStr = match[1];
+  const suffix = match[2];
+  const nextNum = Number.parseInt(numStr, 10) + 1;
+  const padded = String(nextNum).padStart(numStr.length, '0');
+  return `${padded}${suffix}`;
 }
 
 export function splitCameraMakeModel(camera: string): { make: string; model: string } {
@@ -157,6 +219,7 @@ function extractScannerFromSoftware(softwareRaw: unknown): string {
 
 export function parseAnalogExif(
   raw: Record<string, unknown> | null | undefined,
+  fileName?: string,
 ): ParsedExifResult {
   const data = raw ?? {};
 
@@ -173,11 +236,26 @@ export function parseAnalogExif(
 
   let filmStock = '';
   let eiFromText = '';
+  let frameFromText = '';
   for (const candidate of descriptionCandidates) {
     const parsed = parseFilmAndEiFromText(candidate);
     if (parsed.filmStock && !filmStock) filmStock = parsed.filmStock;
     if (parsed.ei && !eiFromText) eiFromText = parsed.ei;
+    if (parsed.frameNumber && !frameFromText) frameFromText = parsed.frameNumber;
   }
+
+  const frameFromTag =
+    normalizeFrameNumber(data.ImageNumber) ||
+    normalizeFrameNumber(data.FrameNumber) ||
+    normalizeFrameNumber(data.frameNumber) ||
+    normalizeFrameNumber(data.SequenceNumber) ||
+    normalizeFrameNumber(data.ImageUniqueID);
+
+  const frameNumber =
+    frameFromTag ||
+    frameFromText ||
+    (fileName ? extractFrameNumberFromFileName(fileName) : '');
+  const frameDetectedFromExif = Boolean(frameFromTag || frameFromText);
 
   const rawIso =
     data.ISO ??
@@ -202,7 +280,7 @@ export function parseAnalogExif(
       date,
       exifDateTime,
       artist,
-      frameNumber: '',
+      frameNumber,
       caption: '',
     },
     detected: {
@@ -213,6 +291,7 @@ export function parseAnalogExif(
       iso: Boolean(isoValue),
       date: Boolean(date),
       artist: Boolean(artist),
+      frameNumber: frameDetectedFromExif,
     },
   };
 }

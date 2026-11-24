@@ -80,6 +80,7 @@ export interface ExifDetectedFlags {
   iso: boolean;
   date: boolean;
   artist: boolean;
+  frameNumber: boolean;
 }
 
 export interface PhotoItem {

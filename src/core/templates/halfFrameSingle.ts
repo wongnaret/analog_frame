@@ -2,7 +2,8 @@ import { drawRotatedImage, fitRectInBox, getRotatedDimensions } from '../rendere
 import {
   HALF_FRAME_SPROCKET_COUNT,
   computeSprocketBandThickness,
-  drawEdgeMarkings,
+  drawFilmDxAndFrameMarkers,
+  drawFilmEdgeStockHeader,
   drawRoundedRectPath,
   drawSprocketRow,
 } from './drawFilmHelpers';
@@ -23,33 +24,35 @@ export const halfFrameSingleTemplate: FrameTemplate = {
     // On real 35mm half-frame film, the 4 perforations always sit along the 17-18mm short edge
     const sprocketsTopBottom = rotDims.height >= rotDims.width;
 
-    const textBand = Math.round(42 * scale);
+    const outerTextBand = Math.round(44 * scale);
+    const innerGap = Math.round(18 * scale);
     const sidePad = Math.round(28 * scale);
     const roughPhoto = fitRectInBox(rotDims.width, rotDims.height, frameRegion, 160 * scale);
     const estimatedSpan = sprocketsTopBottom
       ? roughPhoto.width + sidePad * 2
       : roughPhoto.height + sidePad * 2;
     const maxBandThickness = sprocketsTopBottom
-      ? Math.min(220 * scale, frameRegion.height * 0.17)
-      : Math.min(220 * scale, frameRegion.width * 0.17);
+      ? Math.min(205 * scale, frameRegion.height * 0.155)
+      : Math.min(205 * scale, frameRegion.width * 0.155);
     const sprocketBand = computeSprocketBandThickness(
       estimatedSpan,
       HALF_FRAME_SPROCKET_COUNT,
       maxBandThickness,
       scale,
     );
+    const totalEdgeBand = outerTextBand + sprocketBand + innerGap;
 
     const innerBox = sprocketsTopBottom
       ? {
           x: frameRegion.x + sidePad,
-          y: frameRegion.y + sprocketBand + textBand,
+          y: frameRegion.y + totalEdgeBand,
           width: frameRegion.width - sidePad * 2,
-          height: frameRegion.height - (sprocketBand + textBand) * 2,
+          height: frameRegion.height - totalEdgeBand * 2,
         }
       : {
-          x: frameRegion.x + sprocketBand + textBand,
+          x: frameRegion.x + totalEdgeBand,
           y: frameRegion.y + sidePad,
-          width: frameRegion.width - (sprocketBand + textBand) * 2,
+          width: frameRegion.width - totalEdgeBand * 2,
           height: frameRegion.height - sidePad * 2,
         };
 
@@ -58,14 +61,14 @@ export const halfFrameSingleTemplate: FrameTemplate = {
     const stripRect = sprocketsTopBottom
       ? {
           x: photoRect.x - sidePad,
-          y: photoRect.y - (sprocketBand + textBand),
+          y: photoRect.y - totalEdgeBand,
           width: photoRect.width + sidePad * 2,
-          height: photoRect.height + (sprocketBand + textBand) * 2,
+          height: photoRect.height + totalEdgeBand * 2,
         }
       : {
-          x: photoRect.x - (sprocketBand + textBand),
+          x: photoRect.x - totalEdgeBand,
           y: photoRect.y - sidePad,
-          width: photoRect.width + (sprocketBand + textBand) * 2,
+          width: photoRect.width + totalEdgeBand * 2,
           height: photoRect.height + sidePad * 2,
         };
 
@@ -88,14 +91,19 @@ export const halfFrameSingleTemplate: FrameTemplate = {
     }
 
     const holeColor = palette.id === 'darkroom' ? '#070708' : palette.background;
-    const halfLabel = metadata.filmStock
-      ? `${metadata.filmStock} · HALF`
-      : 'HALF FRAME 17×24';
 
     if (sprocketsTopBottom) {
+      drawFilmEdgeStockHeader(
+        ctx,
+        { x: stripRect.x, y: stripRect.y, width: stripRect.width, height: outerTextBand },
+        'horizontal',
+        metadata.filmStock,
+        scale,
+        false,
+      );
       drawSprocketRow(
         ctx,
-        { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 14 * scale },
+        { x: stripRect.x, y: stripRect.y + outerTextBand, width: stripRect.width, height: sprocketBand },
         'horizontal',
         holeColor,
         scale,
@@ -105,37 +113,41 @@ export const halfFrameSingleTemplate: FrameTemplate = {
         ctx,
         {
           x: stripRect.x,
-          y: stripRect.y + stripRect.height - sprocketBand + 4 * scale,
+          y: stripRect.y + stripRect.height - outerTextBand - sprocketBand,
           width: stripRect.width,
-          height: sprocketBand - 14 * scale,
+          height: sprocketBand,
         },
         'horizontal',
         holeColor,
         scale,
         HALF_FRAME_SPROCKET_COUNT,
       );
-      drawEdgeMarkings(
+      drawFilmDxAndFrameMarkers(
         ctx,
-        { x: stripRect.x, y: photoRect.y - textBand, width: stripRect.width, height: textBand },
+        {
+          x: stripRect.x,
+          y: stripRect.y + stripRect.height - outerTextBand,
+          width: stripRect.width,
+          height: outerTextBand,
+        },
         'horizontal',
         metadata,
         visibility.showFrameNumber,
         scale,
-        halfLabel,
-      );
-      drawEdgeMarkings(
-        ctx,
-        { x: stripRect.x, y: photoRect.y + photoRect.height, width: stripRect.width, height: textBand },
-        'horizontal',
-        metadata,
-        visibility.showFrameNumber,
-        scale,
-        halfLabel,
+        1,
       );
     } else {
+      drawFilmEdgeStockHeader(
+        ctx,
+        { x: stripRect.x, y: stripRect.y, width: outerTextBand, height: stripRect.height },
+        'vertical',
+        metadata.filmStock,
+        scale,
+        false,
+      );
       drawSprocketRow(
         ctx,
-        { x: stripRect.x + 10 * scale, y: stripRect.y, width: sprocketBand - 14 * scale, height: stripRect.height },
+        { x: stripRect.x + outerTextBand, y: stripRect.y, width: sprocketBand, height: stripRect.height },
         'vertical',
         holeColor,
         scale,
@@ -144,9 +156,9 @@ export const halfFrameSingleTemplate: FrameTemplate = {
       drawSprocketRow(
         ctx,
         {
-          x: stripRect.x + stripRect.width - sprocketBand + 4 * scale,
+          x: stripRect.x + stripRect.width - outerTextBand - sprocketBand,
           y: stripRect.y,
-          width: sprocketBand - 14 * scale,
+          width: sprocketBand,
           height: stripRect.height,
         },
         'vertical',
@@ -154,23 +166,19 @@ export const halfFrameSingleTemplate: FrameTemplate = {
         scale,
         HALF_FRAME_SPROCKET_COUNT,
       );
-      drawEdgeMarkings(
+      drawFilmDxAndFrameMarkers(
         ctx,
-        { x: photoRect.x - textBand, y: stripRect.y, width: textBand, height: stripRect.height },
+        {
+          x: stripRect.x + stripRect.width - outerTextBand,
+          y: stripRect.y,
+          width: outerTextBand,
+          height: stripRect.height,
+        },
         'vertical',
         metadata,
         visibility.showFrameNumber,
         scale,
-        halfLabel,
-      );
-      drawEdgeMarkings(
-        ctx,
-        { x: photoRect.x + photoRect.width, y: stripRect.y, width: textBand, height: stripRect.height },
-        'vertical',
-        metadata,
-        visibility.showFrameNumber,
-        scale,
-        halfLabel,
+        1,
       );
     }
 

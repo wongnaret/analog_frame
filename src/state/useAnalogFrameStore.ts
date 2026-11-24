@@ -126,7 +126,7 @@ export function useAnalogFrameStore() {
         const defaultVisibility = photosRef.current[0]?.settings.visibility ?? {
           showDate: false,
           showArtist: false,
-          showFrameNumber: false,
+          showFrameNumber: true,
           showCaption: false,
           showWatermark: true,
         };
@@ -158,7 +158,7 @@ export function useAnalogFrameStore() {
                 ...exif.metadata,
                 scanner: exif.metadata.scanner || DEFAULT_SCANNER,
                 iso: inferredIso,
-                frameNumber: `${seqNum}A`,
+                frameNumber: exif.metadata.frameNumber || `${seqNum}A`,
               },
               settings: {
                 templateId: defaultTemplate,

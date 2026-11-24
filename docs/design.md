@@ -37,15 +37,15 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 1. **Minimal Matte (`minimal-matte`)** *(default)*:
    - Clean gallery presentation with a subtle drop shadow and crisp hairline border on the outer matte.
 2. **35mm Film Strip (`35mm-sprocket`)**:
-   - Classic black 35mm film strip with **8 authentic ISO 1007 sprocket holes** per long edge, subtle rounded film gate, and edge markings (film stock, frame counter, directional arrows) tinted subtly by film brand (Kodak amber, Fuji green, CineStill tungsten, Ilford silver).
+   - Classic black 35mm film strip with **8 rounded ISO 1007 sprocket holes** per long edge, subtle rounded film gate, and authentic outer-margin edge markings (film emulsion code such as `KODAK GB 200-7` or `ILFORD HP5 PLUS`, frame counter + arrow, and DX edge barcode on color/cinema stocks) tinted by film brand.
 3. **Film Rebate (`film-rebate`)**:
    - Sprocket-free black negative border with subtle film-gate notches and minimal edge markings.
 4. **Editorial Spec Card (`editorial-card`)**:
    - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `ISO`, `DATE`, `ARTIST`).
 5. **Half-Frame Single (`half-frame-single`)**:
-   - Authentic 35mm half-frame strip featuring **4 sprocket holes** along the narrow 17–18 mm edges (top/bottom on portrait half-frames, left/right on rotated landscape half-frames).
+   - Authentic 35mm half-frame strip featuring **4 rounded sprocket holes** along the narrow 17–18 mm edges (top/bottom on portrait half-frames, left/right on rotated landscape half-frames) with outer-margin film emulsion name and frame markers.
 6. **Half-Frame Diptych (`half-frame-diptych`)**:
-   - Horizontal 35mm **8-perforation** sprocket strip (4 holes aligned over each half-frame) holding **two** half-frame photos side-by-side separated by a crisp black film septum (`septum`), allowing users to pair any two photos from their batch (or upload a second frame directly).
+   - Horizontal 35mm **8-perforation** rounded sprocket strip (4 holes aligned over each half-frame) holding **two** half-frame photos side-by-side separated by a crisp black film septum (`septum`), with outer-margin film codes and sequential frame numbers (`N`, `N+1` continuing from the first photo).
 
 ---
 

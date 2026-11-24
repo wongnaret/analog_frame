@@ -347,8 +347,13 @@ export function MetadataControls({
         </label>
 
         <label className="block">
-          <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider">
-            Frame No.
+          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+            <span>Frame No.</span>
+            {exifDetected.frameNumber && (
+              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                EXIF
+              </span>
+            )}
           </span>
           <input
             type="text"

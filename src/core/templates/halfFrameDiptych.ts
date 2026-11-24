@@ -2,7 +2,8 @@ import { drawRotatedImage, fitRectInBox, getRotatedDimensions } from '../rendere
 import {
   FULL_FRAME_SPROCKET_COUNT,
   computeSprocketBandThickness,
-  drawEdgeMarkings,
+  drawFilmDxAndFrameMarkers,
+  drawFilmEdgeStockHeader,
   drawRoundedRectPath,
   drawSprocketRow,
 } from './drawFilmHelpers';
@@ -15,7 +16,8 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
   supportsDiptych: true,
   usesCustomFooter: false,
   render(ctx, { frameRegion, scale, primaryImage, secondaryImage, metadata, visibility, palette }) {
-    const textBand = Math.round(40 * scale);
+    const outerTextBand = Math.round(44 * scale);
+    const innerGap = Math.round(18 * scale);
     // Keep sidePad = septumGap / 2 so 4 perforations align cleanly over each half-frame
     const septumGap = Math.round(28 * scale);
     const sidePad = Math.round(septumGap / 2);
@@ -25,9 +27,10 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
     const sprocketBand = computeSprocketBandThickness(
       maxStripW,
       FULL_FRAME_SPROCKET_COUNT,
-      Math.min(200 * scale, maxStripH * 0.18),
+      Math.min(185 * scale, maxStripH * 0.16),
       scale,
     );
+    const totalEdgeBand = outerTextBand + sprocketBand + innerGap;
 
     const stripW = maxStripW;
     const stripH = maxStripH;
@@ -56,10 +59,20 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
 
     const holeColor = palette.id === 'darkroom' ? '#070708' : palette.background;
 
+    // Top: film edge code repeated cleanly over both half-frames
+    drawFilmEdgeStockHeader(
+      ctx,
+      { x: stripRect.x, y: stripRect.y, width: stripRect.width, height: outerTextBand },
+      'horizontal',
+      metadata.filmStock,
+      scale,
+      true,
+    );
+
     // Top & bottom 8-perf sprocket rows (4 perforations per half-frame)
     drawSprocketRow(
       ctx,
-      { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 14 * scale },
+      { x: stripRect.x, y: stripRect.y + outerTextBand, width: stripRect.width, height: sprocketBand },
       'horizontal',
       holeColor,
       scale,
@@ -69,9 +82,9 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
       ctx,
       {
         x: stripRect.x,
-        y: stripRect.y + stripRect.height - sprocketBand + 4 * scale,
+        y: stripRect.y + stripRect.height - outerTextBand - sprocketBand,
         width: stripRect.width,
-        height: sprocketBand - 14 * scale,
+        height: sprocketBand,
       },
       'horizontal',
       holeColor,
@@ -79,8 +92,24 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
       FULL_FRAME_SPROCKET_COUNT,
     );
 
-    const contentTop = stripRect.y + sprocketBand + textBand;
-    const contentBottom = stripRect.y + stripRect.height - (sprocketBand + textBand);
+    // Bottom: sequential frame numbers (f1, f2 = f1 + 1) & DX barcode outside sprockets
+    drawFilmDxAndFrameMarkers(
+      ctx,
+      {
+        x: stripRect.x,
+        y: stripRect.y + stripRect.height - outerTextBand,
+        width: stripRect.width,
+        height: outerTextBand,
+      },
+      'horizontal',
+      metadata,
+      visibility.showFrameNumber,
+      scale,
+      2,
+    );
+
+    const contentTop = stripRect.y + totalEdgeBand;
+    const contentBottom = stripRect.y + stripRect.height - totalEdgeBand;
     const contentHeight = Math.max(80, contentBottom - contentTop);
     const slotWidth = (stripRect.width - sidePad * 2 - septumGap) / 2;
 
@@ -96,24 +125,6 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
       width: slotWidth,
       height: contentHeight,
     };
-
-    drawEdgeMarkings(
-      ctx,
-      { x: stripRect.x, y: stripRect.y + sprocketBand, width: stripRect.width, height: textBand },
-      'horizontal',
-      metadata,
-      visibility.showFrameNumber,
-      scale,
-      metadata.filmStock ? `${metadata.filmStock} · DIPTYCH` : '35MM HALF-FRAME DIPTYCH',
-    );
-    drawEdgeMarkings(
-      ctx,
-      { x: stripRect.x, y: contentBottom, width: stripRect.width, height: textBand },
-      'horizontal',
-      metadata,
-      visibility.showFrameNumber,
-      scale,
-    );
 
     // Slot 1 (primary photo fitted cleanly)
     const rot1 = getRotatedDimensions(primaryImage.width, primaryImage.height, primaryImage.rotation);

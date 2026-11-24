@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 import exifr from 'exifr';
 import {
   buildExifFilmDescription,
+  extractFrameNumberFromFileName,
+  incrementFrameNumber,
   parseAnalogExif,
   splitCameraMakeModel,
 } from './parser';
@@ -38,7 +40,26 @@ describe('parseAnalogExif', () => {
       iso: true,
       date: true,
       artist: true,
+      frameNumber: false,
     });
+  });
+
+  it('extracts frame number from EXIF ImageNumber / UserComment and filename fallbacks', () => {
+    const byTag = parseAnalogExif({ ImageNumber: 17 });
+    expect(byTag.metadata.frameNumber).toBe('17');
+    expect(byTag.detected.frameNumber).toBe(true);
+
+    const byComment = parseAnalogExif({
+      UserComment: 'Film: Kodak Gold 200 | EI: 200 | Frame: 06A',
+    });
+    expect(byComment.metadata.filmStock).toBe('Kodak Gold 200');
+    expect(byComment.metadata.iso).toBe('200');
+    expect(byComment.metadata.frameNumber).toBe('06A');
+    expect(byComment.detected.frameNumber).toBe(true);
+
+    const byFile = parseAnalogExif({}, '000041400022.jpg');
+    expect(byFile.metadata.frameNumber).toBe('22');
+    expect(byFile.detected.frameNumber).toBe(false);
   });
 
   it('detects known film scanners from Software tag, normalizes EZ Controller, and ignores non-scanner software', () => {
@@ -102,6 +123,17 @@ describe('camera & film helpers', () => {
       'Film: Kodak Portra 400 | EI: 400',
     );
   });
+
+  it('extracts frame numbers from common scan filenames and increments sequentially', () => {
+    expect(extractFrameNumberFromFileName('roll01_14A.jpg')).toBe('14A');
+    expect(extractFrameNumberFromFileName('Frame_05A.jpg')).toBe('05A');
+    expect(extractFrameNumberFromFileName('000041400017.jpg')).toBe('17');
+    expect(extractFrameNumberFromFileName('20260913_143005.jpg')).toBe('');
+
+    expect(incrementFrameNumber('06A')).toBe('07A');
+    expect(incrementFrameNumber('17')).toBe('18');
+    expect(incrementFrameNumber('09A')).toBe('10A');
+  });
 });
 
 describe('writeExifToJpegDataUrl round-trip', () => {
@@ -135,5 +167,6 @@ describe('writeExifToJpegDataUrl round-trip', () => {
     expect(metadata.date).toBe('2026-09-13');
     expect(metadata.exifDateTime).toBe('2026:09:13 17:42:00');
     expect(metadata.artist).toBe('Wongnaret');
+    expect(metadata.frameNumber).toBe('01A');
   });
 });

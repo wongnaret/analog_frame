@@ -50,8 +50,9 @@ analog_frame/
 | :--- | :--- | :--- |
 | `camera` | `Make` + `Model` (deduplicated if `Model` already starts with `Make`) | `0th.Make` + `0th.Model` (split on first whitespace) |
 | `lens` | `LensModel`, `Lens` | `Exif.LensModel` (`0xA434`) |
-| `filmStock` | `Film: <stock> \| EI: <iso>` parsed from `ImageDescription`, `UserComment`, `XMP:Description` | `0th.ImageDescription` & `Exif.UserComment` (`Film: <stock> \| EI: <iso>`) |
+| `filmStock` | `Film: <stock> \| EI: <iso>` parsed from `ImageDescription`, `UserComment`, `XMP:Description` | `0th.ImageDescription` & `Exif.UserComment` (`Film: <stock> \| EI: <iso> \| Frame: <no>`) |
 | `iso` | `EI` from `Film: ... \| EI: ...`, fallback to `ISO` / `ISOSpeedRatings` / `PhotographicSensitivity` | `Exif.ISOSpeedRatings` (integer) |
+| `frameNumber` | `ImageNumber` (`0x9211`), `FrameNumber`, `Frame: <no>` in comment, or lab-scan filename fallback | `0th.ImageNumber` (`0x9211`) & `Frame: <no>` in `Exif.UserComment` |
 | `date` / `exifDateTime` | `DateTimeOriginal`, `CreateDate`, `ModifyDate` (formatted in local wall-clock time to prevent UTC shifts) | `0th.DateTime`, `Exif.DateTimeOriginal`, `Exif.DateTimeDigitized` |
 | `artist` | `Artist`, `Copyright` | `0th.Artist`, `0th.Copyright` |
 

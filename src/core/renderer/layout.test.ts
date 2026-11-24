@@ -63,10 +63,10 @@ describe('formatSplitFooterLines', () => {
       },
     );
 
-    expect(lines.leftPrimary).toBe('PENTAX 17  ·  25MM F3.5');
-    expect(lines.leftSecondary).toBe('Frontier SP-3000  ·  Edd');
-    expect(lines.rightPrimary).toBe('ILFORD HP5 PLUS 400');
-    expect(lines.rightSecondary).toBe('ISO 400');
+    expect(lines.leftPrimary).toBe('CAMERA: PENTAX 17  ·  LENS: 25MM F3.5');
+    expect(lines.leftSecondary).toBe('SCANNER: Frontier SP-3000  ·  ARTIST: Edd');
+    expect(lines.rightPrimary).toBe('FILM: ILFORD HP5 PLUS 400');
+    expect(lines.rightSecondary).toBe('ISO: 400');
     expect(lines.captionLine).toBe('Wedding day');
   });
 
@@ -93,10 +93,10 @@ describe('formatSplitFooterLines', () => {
       },
     );
 
-    expect(lines.leftPrimary).toBe('50MM F/1.8');
+    expect(lines.leftPrimary).toBe('LENS: 50MM F/1.8');
     expect(lines.leftSecondary).toBe('');
-    expect(lines.rightPrimary).toBe('KODAK PORTRA 400');
-    expect(lines.rightSecondary).toBe('ISO 400');
+    expect(lines.rightPrimary).toBe('FILM: KODAK PORTRA 400');
+    expect(lines.rightSecondary).toBe('ISO: 400');
     expect(lines.captionLine).toBe('');
   });
 });

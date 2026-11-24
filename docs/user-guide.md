@@ -36,7 +36,7 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
   - `1:1 Square` (`2160 × 2160`) — Square feed post.
   - `9:16 Story` (`2160 × 3840`) — Instagram Stories & Reels cover.
 - **Outer Matte**: Switch between **White** (default), **Warm Paper**, and **Darkroom** black.
-- **Footer Watermark & Field Toggles**: The outer matte footer displays `Camera · Lens` and `Scanner` on the left, with `Film Stock` and `ISO` on the right. Edit or toggle **Footer Watermark** directly inside either the **Canvas** or **Metadata** tab (defaults to `ANALOG FRAME`, includes a **Reset** button, and remembers your latest value automatically in browser storage). Optional toggles control `Shooting Date` (Editorial Card), `Frame Number` (35mm film borders), `Photographer / Artist`, and `Custom Caption`. Shooting dates remain preserved in exported JPEG EXIF even when hidden from the frame.
+- **Footer Watermark & Field Toggles**: The outer matte footer displays labeled values (`CAMERA: ... · LENS: ...` and `SCANNER: ...` on the left, with `FILM: ...` and `ISO: ...` on the right). Edit or toggle **Footer Watermark** directly inside either the **Canvas** or **Metadata** tab (defaults to `ANALOG FRAME`, includes a **Reset** button, and remembers your latest value automatically in browser storage). Optional toggles control `Shooting Date` (Editorial Card), `Frame Number` (35mm film borders), `Photographer / Artist`, and `Custom Caption`. Shooting dates remain preserved in exported JPEG EXIF even when hidden from the frame.
 - Tap **Apply to All** to apply the ratio, matte, watermark, and field visibility across all uploaded photos.
 
 ### Step 4: Review & Edit EXIF Metadata (`Metadata` Tab)

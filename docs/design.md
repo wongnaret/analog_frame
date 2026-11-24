@@ -13,7 +13,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 1. **Layer 1 — Outer IG Canvas & Matte**:
    - Guarantees an exact Instagram-friendly aspect ratio regardless of the scanned photo's proportions (35mm 3:2, half-frame 3:4, medium format 6×6 / 6×7, or panoramic).
    - **Never crops** the film scan; the inner frame fits cleanly inside the matte with balanced margins.
-   - Hosts crisp, mobile-legible **English typography** in a split left/right footer region (`Camera · Lens` on line 1 left, `Scanner` on line 2 left; `Film Stock` and `ISO` on the right), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
+   - Hosts crisp, mobile-legible **English typography** in a labeled split left/right footer region (`CAMERA: ... · LENS: ...` on line 1 left, `SCANNER: ...` on line 2 left; `FILM: ...` and `ISO: ...` on the right), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
    - Displays a subtle tracked **Footer Watermark** (`ANALOG FRAME` by default, customizable and remembered in `localStorage`) along the bottom edge.
 2. **Layer 2 — Inner Film Frame Template**:
    - Renders authentic analog borders around the scanned photo (sprockets, rebate notches, edge markings, matte hairlines, or half-frame diptych septum).

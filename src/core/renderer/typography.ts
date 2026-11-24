@@ -20,12 +20,26 @@ export function formatSplitFooterLines(
   const scanner = (metadata.scanner ?? '').trim();
   const artist = visibility.showArtist ? metadata.artist.trim() : '';
 
-  const leftPrimary = [camera, lens].filter(Boolean).join('  ·  ').toUpperCase();
-  const leftSecondary = [scanner, artist].filter(Boolean).join('  ·  ');
+  const leftPrimary = [
+    camera ? `CAMERA: ${camera}` : '',
+    lens ? `LENS: ${lens}` : '',
+  ]
+    .filter(Boolean)
+    .join('  ·  ')
+    .toUpperCase();
 
-  const rightPrimary = metadata.filmStock.trim().toUpperCase();
+  const leftSecondary = [
+    scanner ? `SCANNER: ${scanner}` : '',
+    artist ? `ARTIST: ${artist}` : '',
+  ]
+    .filter(Boolean)
+    .join('  ·  ');
+
+  const rightPrimary = metadata.filmStock.trim()
+    ? `FILM: ${metadata.filmStock.trim().toUpperCase()}`
+    : '';
   const rightSecondary = metadata.iso.trim()
-    ? `ISO ${metadata.iso.trim()}`
+    ? `ISO: ${metadata.iso.trim()}`
     : '';
 
   const captionLine =
@@ -99,9 +113,9 @@ export function drawOuterTypography(
   let cursorY = footer.y + Math.max(16 * scale, (footer.height - totalHeight) / 2);
 
   const leftX = footer.x;
-  const leftMaxW = footer.width * 0.56;
+  const leftMaxW = footer.width * 0.54;
   const rightX = footer.x + footer.width;
-  const rightMaxW = footer.width * 0.40;
+  const rightMaxW = footer.width * 0.42;
 
   if (hasPrimaryRow) {
     const primaryY = cursorY + 32 * scale;
@@ -115,8 +129,8 @@ export function drawOuterTypography(
         leftMaxW,
         'left',
         (s) => `700 ${s}px "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif`,
-        64 * scale,
-        30 * scale,
+        56 * scale,
+        26 * scale,
       );
     }
     if (rightPrimary) {
@@ -129,8 +143,8 @@ export function drawOuterTypography(
         rightMaxW,
         'right',
         (s) => `600 ${s}px "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif`,
-        56 * scale,
-        28 * scale,
+        50 * scale,
+        24 * scale,
       );
     }
     cursorY += 66 * scale;

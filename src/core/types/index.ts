@@ -44,6 +44,7 @@ export interface FilmStockPreset {
 export interface PhotoMetadata {
   camera: string;
   lens: string;
+  scanner: string;
   filmStock: string;
   iso: string;
   date: string; // YYYY-MM-DD
@@ -74,6 +75,7 @@ export interface FrameSettings {
 export interface ExifDetectedFlags {
   camera: boolean;
   lens: boolean;
+  scanner: boolean;
   filmStock: boolean;
   iso: boolean;
   date: boolean;
@@ -101,6 +103,7 @@ export interface ExportOptions {
 export interface GearHistory {
   cameras: string[];
   lenses: string[];
+  scanners: string[];
   filmStocks: string[];
   artists: string[];
 }

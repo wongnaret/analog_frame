@@ -7,6 +7,7 @@ const MAX_ITEMS_PER_LIST = 12;
 const EMPTY_HISTORY: GearHistory = {
   cameras: [],
   lenses: [],
+  scanners: [],
   filmStocks: [],
   artists: [],
 };
@@ -34,6 +35,7 @@ export function loadGearHistory(): GearHistory {
     return {
       cameras: sanitizeList(parsed.cameras),
       lenses: sanitizeList(parsed.lenses),
+      scanners: sanitizeList(parsed.scanners),
       filmStocks: sanitizeList(parsed.filmStocks),
       artists: sanitizeList(parsed.artists),
     };
@@ -58,6 +60,9 @@ export function recordMetadataInGearHistory(
   const next: GearHistory = {
     cameras: metadata.camera ? pushUnique(current.cameras, metadata.camera) : current.cameras,
     lenses: metadata.lens ? pushUnique(current.lenses, metadata.lens) : current.lenses,
+    scanners: metadata.scanner
+      ? pushUnique(current.scanners, metadata.scanner)
+      : current.scanners,
     filmStocks: metadata.filmStock
       ? pushUnique(current.filmStocks, metadata.filmStock)
       : current.filmStocks,

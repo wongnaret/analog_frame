@@ -7,6 +7,7 @@ import type {
   MetadataVisibility,
   PhotoItem,
 } from '../core/types';
+import { WatermarkField } from './WatermarkField';
 
 interface CanvasControlsProps {
   photo: PhotoItem;
@@ -14,6 +15,7 @@ interface CanvasControlsProps {
   onChangeRatio: (aspectRatioId: AspectRatioId) => void;
   onChangeMatte: (matteId: MattePaletteId) => void;
   onToggleVisibility: (key: keyof MetadataVisibility) => void;
+  onToggleWatermark: () => void;
   onChangeWatermarkText: (watermarkText: string) => void;
   onApplyCanvasToAll: () => void;
 }
@@ -23,11 +25,10 @@ const VISIBILITY_OPTIONS: Array<{
   label: string;
   hint: string;
 }> = [
-  { key: 'showDate', label: 'Shooting Date', hint: 'Display YYYY-MM-DD' },
-  { key: 'showFrameNumber', label: 'Frame Number', hint: 'Edge counter & footer tag' },
+  { key: 'showDate', label: 'Shooting Date', hint: 'Shown on Editorial Card' },
+  { key: 'showFrameNumber', label: 'Frame Number', hint: 'Edge counter on 35mm film borders' },
   { key: 'showArtist', label: 'Photographer / Artist', hint: 'Credit on frame' },
   { key: 'showCaption', label: 'Custom Caption', hint: 'Italic note below specs' },
-  { key: 'showWatermark', label: 'Footer Watermark', hint: 'Subtle small watermark at bottom' },
 ];
 
 export function CanvasControls({
@@ -36,6 +37,7 @@ export function CanvasControls({
   onChangeRatio,
   onChangeMatte,
   onToggleVisibility,
+  onToggleWatermark,
   onChangeWatermarkText,
   onApplyCanvasToAll,
 }: CanvasControlsProps) {
@@ -142,6 +144,13 @@ export function CanvasControls({
         </div>
       </div>
 
+      <WatermarkField
+        watermarkText={photo.settings.watermarkText}
+        showWatermark={photo.settings.visibility.showWatermark}
+        onChangeWatermarkText={onChangeWatermarkText}
+        onToggleWatermark={onToggleWatermark}
+      />
+
       <div>
         <h3 className="mb-2.5 text-xs font-semibold uppercase tracking-wider">
           Frame Typography Fields
@@ -184,25 +193,6 @@ export function CanvasControls({
             );
           })}
         </div>
-
-        {photo.settings.visibility.showWatermark && (
-          <label className="mt-2.5 block">
-            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider">
-              Watermark Text
-            </span>
-            <input
-              type="text"
-              value={photo.settings.watermarkText}
-              onChange={(e) => onChangeWatermarkText(e.target.value)}
-              placeholder="ANALOG FRAME"
-              className="font-mono-tech w-full rounded-lg border px-3 py-2 text-xs uppercase outline-none focus:ring-1"
-              style={{
-                backgroundColor: 'var(--bg-elevated)',
-                borderColor: 'var(--border-subtle)',
-              }}
-            />
-          </label>
-        )}
       </div>
     </div>
   );

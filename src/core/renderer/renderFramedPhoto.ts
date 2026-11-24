@@ -3,7 +3,11 @@ import { getTemplate } from '../templates/registry';
 import type { RenderableImage } from '../templates/types';
 import type { FrameSettings, PhotoMetadata } from '../types';
 import { computeCanvasLayout } from './layout';
-import { drawFooterWatermark, drawOuterTypography } from './typography';
+import {
+  DEFAULT_WATERMARK_TEXT,
+  drawFooterWatermark,
+  drawOuterTypography,
+} from './typography';
 
 export interface RenderFramedPhotoParams {
   primaryImage: RenderableImage;
@@ -73,8 +77,8 @@ export function renderFramedPhoto({
   drawFooterWatermark(
     ctx,
     layout.watermarkRegion,
-    settings.watermarkText,
-    settings.visibility.showWatermark,
+    settings.watermarkText ?? DEFAULT_WATERMARK_TEXT,
+    settings.visibility.showWatermark ?? true,
     palette,
     scale,
   );

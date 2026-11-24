@@ -13,7 +13,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 1. **Layer 1 — Outer IG Canvas & Matte**:
    - Guarantees an exact Instagram-friendly aspect ratio regardless of the scanned photo's proportions (35mm 3:2, half-frame 3:4, medium format 6×6 / 6×7, or panoramic).
    - **Never crops** the film scan; the inner frame fits cleanly inside the matte with balanced margins.
-   - Hosts crisp, mobile-legible **English typography** in a split left/right footer region (`Camera` + `Lens` on the left, `Film Stock` + `EI / Date / Frame` on the right), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
+   - Hosts crisp, mobile-legible **English typography** in a split left/right footer region (`Camera · Lens` on line 1 left, `Scanner` on line 2 left; `Film Stock` and `ISO` on the right), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
    - Displays a subtle tracked **Footer Watermark** (`ANALOG FRAME` by default, customizable and remembered in `localStorage`) along the bottom edge.
 2. **Layer 2 — Inner Film Frame Template**:
    - Renders authentic analog borders around the scanned photo (sprockets, rebate notches, edge markings, matte hairlines, or half-frame diptych septum).
@@ -41,7 +41,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 3. **Film Rebate (`film-rebate`)**:
    - Sprocket-free black negative border with subtle film-gate notches and minimal edge markings.
 4. **Editorial Spec Card (`editorial-card`)**:
-   - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `EI / ISO`, `DATE`, `ARTIST`).
+   - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `ISO`, `DATE`, `ARTIST`).
 5. **Half-Frame Single (`half-frame-single`)**:
    - Authentic vertical 35mm half-frame strip (left/right sprockets, Pentax 17-inspired half-frame gate and dual frame markers like `01 / 01A`).
 6. **Half-Frame Diptych (`half-frame-diptych`)**:
@@ -50,7 +50,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 ---
 
 ## 4. Metadata & Film Presets
-- **Primary Fields** (shown on frame): `Camera` (`Make` + `Model`), `Lens`, `Film Stock`, `ISO / EI`.
+- **Primary Fields** (shown on frame): `Camera` (`Make` + `Model`), `Lens`, `Scanner`, `Film Stock`, `ISO`.
 - **Optional Toggle Fields**: `Date`, `Artist`, `Frame No.`, `Custom Caption`.
 - **EXIF Auto-Detection**: Automatically parses tags written by `fix_exif/fix_exif.ps1` (`Film: <stock> | EI: <iso>` inside `ImageDescription` / `UserComment` / `XMP:Description`) as well as standard camera EXIF.
 - **Quick-Fill & Gear Memory**:

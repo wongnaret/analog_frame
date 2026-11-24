@@ -17,21 +17,16 @@ export function formatSplitFooterLines(
 ): SplitFooterLines {
   const camera = metadata.camera.trim();
   const lens = metadata.lens.trim();
+  const scanner = (metadata.scanner ?? '').trim();
   const artist = visibility.showArtist ? metadata.artist.trim() : '';
 
-  const leftPrimary = (camera || lens).toUpperCase();
-  const leftSecondaryParts = camera
-    ? [lens, artist].filter(Boolean)
-    : [artist].filter(Boolean);
+  const leftPrimary = [camera, lens].filter(Boolean).join('  ·  ').toUpperCase();
+  const leftSecondary = [scanner, artist].filter(Boolean).join('  ·  ');
 
   const rightPrimary = metadata.filmStock.trim().toUpperCase();
-  const rightSecondaryParts = [
-    metadata.iso.trim() ? `EI ${metadata.iso.trim()}` : '',
-    visibility.showDate && metadata.date.trim() ? metadata.date.trim() : '',
-    visibility.showFrameNumber && metadata.frameNumber.trim()
-      ? `#${metadata.frameNumber.trim()}`
-      : '',
-  ].filter(Boolean);
+  const rightSecondary = metadata.iso.trim()
+    ? `ISO ${metadata.iso.trim()}`
+    : '';
 
   const captionLine =
     visibility.showCaption && metadata.caption.trim()
@@ -40,9 +35,9 @@ export function formatSplitFooterLines(
 
   return {
     leftPrimary,
-    leftSecondary: leftSecondaryParts.join('  ·  '),
+    leftSecondary,
     rightPrimary,
-    rightSecondary: rightSecondaryParts.join('  ·  '),
+    rightSecondary,
     captionLine,
   };
 }
@@ -104,9 +99,9 @@ export function drawOuterTypography(
   let cursorY = footer.y + Math.max(16 * scale, (footer.height - totalHeight) / 2);
 
   const leftX = footer.x;
-  const leftMaxW = footer.width * 0.50;
+  const leftMaxW = footer.width * 0.56;
   const rightX = footer.x + footer.width;
-  const rightMaxW = footer.width * 0.46;
+  const rightMaxW = footer.width * 0.40;
 
   if (hasPrimaryRow) {
     const primaryY = cursorY + 32 * scale;

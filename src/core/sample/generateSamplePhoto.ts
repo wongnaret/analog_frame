@@ -4,6 +4,7 @@ import type { PhotoMetadata } from '../types';
 export const SAMPLE_METADATA: PhotoMetadata = {
   camera: 'Pentax 17',
   lens: '25mm F3.5',
+  scanner: 'Frontier SP-3000',
   filmStock: 'Kodak Portra 400',
   iso: '400',
   date: '2026-09-13',

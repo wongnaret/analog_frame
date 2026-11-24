@@ -81,8 +81,12 @@ export const editorialCardTemplate: FrameTemplate = {
     const specs: Array<[string, string]> = [
       ['CAMERA', metadata.camera.trim() || '—'],
       ['LENS', metadata.lens.trim() || '—'],
-      ['EXPOSURE', metadata.iso.trim() ? `EI ${metadata.iso.trim()}` : '—'],
+      ['EXPOSURE', metadata.iso.trim() ? `ISO ${metadata.iso.trim()}` : '—'],
     ];
+
+    if (metadata.scanner?.trim()) {
+      specs.push(['SCANNER', metadata.scanner.trim()]);
+    }
 
     if (visibility.showDate && metadata.date.trim()) {
       specs.push(['DATE', metadata.date.trim()]);

@@ -222,6 +222,16 @@ export function App() {
                       },
                     })
                   }
+                  onToggleWatermark={() =>
+                    store.updateSettings(selectedPhoto.id, {
+                      visibility: {
+                        ...selectedPhoto.settings.visibility,
+                        showWatermark: !(
+                          selectedPhoto.settings.visibility.showWatermark ?? true
+                        ),
+                      },
+                    })
+                  }
                   onChangeWatermarkText={(watermarkText) =>
                     store.updateSettings(selectedPhoto.id, { watermarkText })
                   }
@@ -238,6 +248,19 @@ export function App() {
                   gearHistory={store.gearHistory}
                   onUpdateMetadata={(patch) =>
                     store.updateMetadata(selectedPhoto.id, patch)
+                  }
+                  onChangeWatermarkText={(watermarkText) =>
+                    store.updateSettings(selectedPhoto.id, { watermarkText })
+                  }
+                  onToggleWatermark={() =>
+                    store.updateSettings(selectedPhoto.id, {
+                      visibility: {
+                        ...selectedPhoto.settings.visibility,
+                        showWatermark: !(
+                          selectedPhoto.settings.visibility.showWatermark ?? true
+                        ),
+                      },
+                    })
                   }
                   onSaveGearToHistory={() =>
                     store.savePhotoGearToHistory(selectedPhoto.id)

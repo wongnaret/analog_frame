@@ -33,11 +33,22 @@ describe('parseAnalogExif', () => {
     expect(detected).toEqual({
       camera: true,
       lens: true,
+      scanner: false,
       filmStock: true,
       iso: true,
       date: true,
       artist: true,
     });
+  });
+
+  it('detects known film scanners from Software tag and ignores non-scanner software', () => {
+    const frontier = parseAnalogExif({ Software: 'Frontier SP-3000' });
+    expect(frontier.metadata.scanner).toBe('Frontier SP-3000');
+    expect(frontier.detected.scanner).toBe(true);
+
+    const lightroom = parseAnalogExif({ Software: 'Adobe Lightroom' });
+    expect(lightroom.metadata.scanner).toBe('');
+    expect(lightroom.detected.scanner).toBe(false);
   });
 
   it('deduplicates Make when Model already starts with Make', () => {
@@ -90,6 +101,7 @@ describe('writeExifToJpegDataUrl round-trip', () => {
     const taggedDataUrl = writeExifToJpegDataUrl(MINIMAL_1X1_JPEG_DATA_URL, {
       camera: 'Pentax 17',
       lens: '25mm F3.5',
+      scanner: 'Frontier SP-3000',
       filmStock: 'Kodak Portra 400',
       iso: '400',
       date: '2026-09-13',

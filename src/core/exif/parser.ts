@@ -130,6 +130,15 @@ export function buildExifFilmDescription(filmStock: string, iso: string): string
   return '';
 }
 
+const KNOWN_SCANNER_PATTERN =
+  /noritsu|frontier|sp-?3000|sp-?2000|sp-?500|ez controller|qss|pakon|plustek|coolscan|flextight|imacon|epson|silverfast|vuescan/i;
+
+function extractScannerFromSoftware(softwareRaw: unknown): string {
+  const software = cleanString(softwareRaw);
+  if (!software || /^analog frame$/i.test(software)) return '';
+  return KNOWN_SCANNER_PATTERN.test(software) ? software : '';
+}
+
 export function parseAnalogExif(
   raw: Record<string, unknown> | null | undefined,
 ): ParsedExifResult {
@@ -137,6 +146,7 @@ export function parseAnalogExif(
 
   const camera = combineCameraName(data.Make ?? data.make, data.Model ?? data.model);
   const lens = cleanString(data.LensModel ?? data.Lens ?? data.lensModel ?? data.lens);
+  const scanner = extractScannerFromSoftware(data.Software ?? data.software);
 
   const descriptionCandidates = [
     cleanString(data.ImageDescription),
@@ -170,6 +180,7 @@ export function parseAnalogExif(
     metadata: {
       camera,
       lens,
+      scanner,
       filmStock,
       iso: isoValue,
       date,
@@ -181,6 +192,7 @@ export function parseAnalogExif(
     detected: {
       camera: Boolean(camera),
       lens: Boolean(lens),
+      scanner: Boolean(scanner),
       filmStock: Boolean(filmStock),
       iso: Boolean(isoValue),
       date: Boolean(date),

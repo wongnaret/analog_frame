@@ -59,6 +59,7 @@ describe('gearStorage', () => {
     history = recordMetadataInGearHistory(history, {
       camera: 'Pentax 17',
       lens: '25mm F3.5',
+      scanner: 'Frontier SP-3000',
       filmStock: 'Kodak Portra 400',
       artist: 'W. Studio',
     });
@@ -70,6 +71,7 @@ describe('gearStorage', () => {
     const loaded = loadGearHistory();
     expect(loaded.cameras).toEqual(['Leica M6', 'Pentax 17']);
     expect(loaded.lenses).toEqual(['35mm Summicron', '25mm F3.5']);
+    expect(loaded.scanners).toEqual(['Frontier SP-3000']);
     expect(loaded.filmStocks).toEqual(['Kodak Portra 400']);
     expect(loaded.artists).toEqual(['W. Studio']);
   });

@@ -40,11 +40,12 @@ describe('layout geometry', () => {
 });
 
 describe('formatSplitFooterLines', () => {
-  it('places camera + lens on the left and film stock + specs on the right', () => {
+  it('places camera + lens on line 1 left, scanner on line 2 left, and film + ISO on the right', () => {
     const lines = formatSplitFooterLines(
       {
         camera: 'Pentax 17',
         lens: '25mm F3.5',
+        scanner: 'Frontier SP-3000',
         filmStock: 'Ilford HP5 Plus 400',
         iso: '400',
         date: '2026-09-13',
@@ -62,18 +63,19 @@ describe('formatSplitFooterLines', () => {
       },
     );
 
-    expect(lines.leftPrimary).toBe('PENTAX 17');
-    expect(lines.leftSecondary).toBe('25mm F3.5  ·  Edd');
+    expect(lines.leftPrimary).toBe('PENTAX 17  ·  25MM F3.5');
+    expect(lines.leftSecondary).toBe('Frontier SP-3000  ·  Edd');
     expect(lines.rightPrimary).toBe('ILFORD HP5 PLUS 400');
-    expect(lines.rightSecondary).toBe('EI 400  ·  2026-09-13  ·  #04A');
+    expect(lines.rightSecondary).toBe('ISO 400');
     expect(lines.captionLine).toBe('Wedding day');
   });
 
-  it('promotes lens to leftPrimary when camera is empty and respects hidden toggles', () => {
+  it('handles missing camera or scanner cleanly and respects hidden toggles', () => {
     const lines = formatSplitFooterLines(
       {
         camera: '',
         lens: '50mm f/1.8',
+        scanner: '',
         filmStock: 'Kodak Portra 400',
         iso: '400',
         date: '2026-09-13',
@@ -94,7 +96,7 @@ describe('formatSplitFooterLines', () => {
     expect(lines.leftPrimary).toBe('50MM F/1.8');
     expect(lines.leftSecondary).toBe('');
     expect(lines.rightPrimary).toBe('KODAK PORTRA 400');
-    expect(lines.rightSecondary).toBe('EI 400');
+    expect(lines.rightSecondary).toBe('ISO 400');
     expect(lines.captionLine).toBe('');
   });
 });

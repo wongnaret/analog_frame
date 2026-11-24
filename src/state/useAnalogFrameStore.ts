@@ -123,9 +123,9 @@ export function useAnalogFrameStore() {
           photosRef.current[0]?.settings.watermarkText ??
           loadSavedWatermarkText(DEFAULT_WATERMARK_TEXT);
         const defaultVisibility = photosRef.current[0]?.settings.visibility ?? {
-          showDate: true,
+          showDate: false,
           showArtist: false,
-          showFrameNumber: true,
+          showFrameNumber: false,
           showCaption: false,
           showWatermark: true,
         };
@@ -188,6 +188,7 @@ export function useAnalogFrameStore() {
               if (
                 item.metadata.camera ||
                 item.metadata.lens ||
+                item.metadata.scanner ||
                 item.metadata.filmStock ||
                 item.metadata.artist
               ) {
@@ -349,6 +350,7 @@ export function useAnalogFrameStore() {
           ...item.metadata,
           camera: source.metadata.camera,
           lens: source.metadata.lens,
+          scanner: source.metadata.scanner,
           filmStock: source.metadata.filmStock,
           iso: source.metadata.iso,
           artist: source.metadata.artist,

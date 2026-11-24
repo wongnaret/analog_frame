@@ -36,14 +36,14 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
   - `1:1 Square` (`2160 × 2160`) — Square feed post.
   - `9:16 Story` (`2160 × 3840`) — Instagram Stories & Reels cover.
 - **Outer Matte**: Switch between **White** (default), **Warm Paper**, and **Darkroom** black.
-- **Field Toggles & Watermark**: Show or hide optional `Shooting Date`, `Frame Number`, `Photographer / Artist`, `Custom Caption`, and `Footer Watermark` (defaults to `ANALOG FRAME`; edit **Watermark Text** to customize it and your latest value is remembered automatically in browser storage).
-- Tap **Apply to All** to apply the ratio, matte, and field visibility across all uploaded photos.
+- **Footer Watermark & Field Toggles**: The outer matte footer displays `Camera · Lens` and `Scanner` on the left, with `Film Stock` and `ISO` on the right. Edit or toggle **Footer Watermark** directly inside either the **Canvas** or **Metadata** tab (defaults to `ANALOG FRAME`, includes a **Reset** button, and remembers your latest value automatically in browser storage). Optional toggles control `Shooting Date` (Editorial Card), `Frame Number` (35mm film borders), `Photographer / Artist`, and `Custom Caption`. Shooting dates remain preserved in exported JPEG EXIF even when hidden from the frame.
+- Tap **Apply to All** to apply the ratio, matte, watermark, and field visibility across all uploaded photos.
 
 ### Step 4: Review & Edit EXIF Metadata (`Metadata` Tab)
-- Detected EXIF values populate automatically.
-- Fill or adjust `Camera`, `Lens`, `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Shooting Date`, `Artist / Credit`, `Frame No.`, and `Custom Caption`.
-- Previously used gear is saved locally in your browser (or tap **Save Gear** manually) as quick-pick chips under `Camera`, `Lens`, and `Film Stock`.
-- Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Film Stock`, `ISO / EI`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
+- Detected EXIF values populate automatically (including known film scanners from the EXIF `Software` tag).
+- Fill or adjust `Camera`, `Lens`, `Scanner` (with quick-pick presets such as `Frontier SP-3000` and `Noritsu HS-1800`), `Film Stock` (type freely or pick from the curated film dropdown), `ISO / EI`, `Shooting Date`, `Artist / Credit`, `Frame No.`, `Custom Caption`, and `Footer Watermark`.
+- Previously used gear is saved locally in your browser (or tap **Save Gear** manually) as quick-pick chips under `Camera`, `Lens`, `Scanner`, and `Film Stock`.
+- Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Scanner`, `Film Stock`, `ISO / EI`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
 
 ### Step 5: Export for Instagram (`Export` Tab)
 - Choose **JPEG (95%)** *(recommended)* or **PNG (Lossless)**.

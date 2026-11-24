@@ -36,7 +36,7 @@ analog_frame/
 - **`src/core/exif/parser.ts`**: Pure function `parseAnalogExif(raw)` converts raw EXIF/XMP dictionaries into normalized `PhotoMetadata`.
 - **`src/core/exif/reader.ts`**: Browser wrapper calling `exifr.parse(file, { tiff: true, exif: true, xmp: true, userComment: true })`.
 - **`src/core/exif/writer.ts`**: Injects key metadata back into exported JPEG Data URLs/Blobs using `piexifjs`, sanitizing ASCII-only tags safely.
-- **`src/core/presets/gearStorage.ts`**: Persists previously used `cameras`, `lenses`, `filmStocks`, `artists`, and the last-edited footer `watermarkText` in `localStorage`.
+- **`src/core/presets/gearStorage.ts`**: Persists previously used `cameras`, `lenses`, `scanners`, `filmStocks`, `artists`, and the last-edited footer `watermarkText` in `localStorage`.
 - **`src/core/renderer/layout.ts`**: Pure geometry (`computeCanvasLayout`, `fitRectInBox`, `getRotatedDimensions`, `drawRotatedImage`) ensuring zero-crop fitting at any scale.
 - **`src/core/templates/registry.ts`**: Central template registry (`TEMPLATES`, `getTemplate`). Adding a new frame style only requires implementing `FrameTemplate` and registering it here.
 - **`src/core/export/exporter.ts`**: Handles high-resolution rendering (`scale = 1`), EXIF re-injection, `navigator.share({ files })` on mobile, and sequential low-memory ZIP creation via `fflate`.

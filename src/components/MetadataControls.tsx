@@ -4,12 +4,17 @@ import {
   inferIsoFromFilmStock,
 } from '../core/presets/filmStocks';
 import type { GearHistory, PhotoItem, PhotoMetadata } from '../core/types';
+import { WatermarkField } from './WatermarkField';
+
+const DEFAULT_SCANNER_PRESETS = ['Frontier SP-3000', 'Noritsu HS-1800', 'Plustek 8200i'];
 
 interface MetadataControlsProps {
   photo: PhotoItem;
   totalPhotos: number;
   gearHistory: GearHistory;
   onUpdateMetadata: (patch: Partial<PhotoMetadata>) => void;
+  onChangeWatermarkText: (watermarkText: string) => void;
+  onToggleWatermark: () => void;
   onSaveGearToHistory: () => void;
   onApplyGearToAll: () => void;
 }
@@ -19,11 +24,16 @@ export function MetadataControls({
   totalPhotos,
   gearHistory,
   onUpdateMetadata,
+  onChangeWatermarkText,
+  onToggleWatermark,
   onSaveGearToHistory,
   onApplyGearToAll,
 }: MetadataControlsProps) {
   const { metadata, exifDetected } = photo;
   const anyExifFound = Object.values(exifDetected).some(Boolean);
+  const scannerSuggestions = Array.from(
+    new Set([...(gearHistory.scanners ?? []), ...DEFAULT_SCANNER_PRESETS]),
+  ).slice(0, 4);
 
   const handleFilmChange = (value: string) => {
     const inferred = inferIsoFromFilmStock(value);
@@ -169,6 +179,45 @@ export function MetadataControls({
               ))}
             </div>
           )}
+        </label>
+
+        <label className="block sm:col-span-2">
+          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+            <span>Scanner</span>
+            {exifDetected.scanner && (
+              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                EXIF
+              </span>
+            )}
+          </span>
+          <input
+            type="text"
+            value={metadata.scanner ?? ''}
+            onChange={(e) => onUpdateMetadata({ scanner: e.target.value })}
+            placeholder="e.g. Frontier SP-3000, Noritsu HS-1800"
+            className="w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
+            style={{
+              backgroundColor: 'var(--bg-elevated)',
+              borderColor: 'var(--border-subtle)',
+            }}
+          />
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {scannerSuggestions.map((scanner) => (
+              <button
+                key={scanner}
+                type="button"
+                onClick={() => onUpdateMetadata({ scanner })}
+                className="rounded border px-1.5 py-0.5 text-[10px] transition hover:opacity-80"
+                style={{
+                  backgroundColor: 'var(--bg-surface)',
+                  borderColor: 'var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                }}
+              >
+                {scanner}
+              </button>
+            ))}
+          </div>
         </label>
 
         <div className="sm:col-span-2">
@@ -331,6 +380,13 @@ export function MetadataControls({
           />
         </label>
       </div>
+
+      <WatermarkField
+        watermarkText={photo.settings.watermarkText}
+        showWatermark={photo.settings.visibility.showWatermark}
+        onChangeWatermarkText={onChangeWatermarkText}
+        onToggleWatermark={onToggleWatermark}
+      />
     </div>
   );
 }

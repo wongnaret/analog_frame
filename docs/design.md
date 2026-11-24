@@ -37,15 +37,15 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 1. **Minimal Matte (`minimal-matte`)** *(default)*:
    - Clean gallery presentation with a subtle drop shadow and crisp hairline border on the outer matte.
 2. **35mm Film Strip (`35mm-sprocket`)**:
-   - Classic black 35mm film strip with rounded sprocket holes along the long edges, subtle rounded film gate, and edge markings (film stock, frame counter, directional arrows) tinted subtly by film brand (Kodak amber, Fuji green, CineStill tungsten, Ilford silver).
+   - Classic black 35mm film strip with **8 authentic ISO 1007 sprocket holes** per long edge, subtle rounded film gate, and edge markings (film stock, frame counter, directional arrows) tinted subtly by film brand (Kodak amber, Fuji green, CineStill tungsten, Ilford silver).
 3. **Film Rebate (`film-rebate`)**:
    - Sprocket-free black negative border with subtle film-gate notches and minimal edge markings.
 4. **Editorial Spec Card (`editorial-card`)**:
    - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `ISO`, `DATE`, `ARTIST`).
 5. **Half-Frame Single (`half-frame-single`)**:
-   - Authentic vertical 35mm half-frame strip (left/right sprockets, Pentax 17-inspired half-frame gate and dual frame markers like `01 / 01A`).
+   - Authentic 35mm half-frame strip featuring **4 sprocket holes** along the narrow 17–18 mm edges (top/bottom on portrait half-frames, left/right on rotated landscape half-frames).
 6. **Half-Frame Diptych (`half-frame-diptych`)**:
-   - Horizontal 35mm sprocket strip holding **two** half-frame photos side-by-side separated by a crisp black film septum (`septum`), allowing users to pair any two photos from their batch (or upload a second frame directly).
+   - Horizontal 35mm **8-perforation** sprocket strip (4 holes aligned over each half-frame) holding **two** half-frame photos side-by-side separated by a crisp black film septum (`septum`), allowing users to pair any two photos from their batch (or upload a second frame directly).
 
 ---
 

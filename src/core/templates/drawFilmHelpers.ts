@@ -2,6 +2,87 @@ import type { PhotoMetadata } from '../types';
 import type { Rect } from '../renderer/layout';
 import { getFilmAccentColor } from '../presets/filmStocks';
 
+export const FULL_FRAME_SPROCKET_COUNT = 8;
+export const HALF_FRAME_SPROCKET_COUNT = 4;
+
+// ISO 1007 (135 film) standard perforation proportions:
+// Pitch = 4.75 mm, width = 1.98 mm (0.417 * pitch), height = 2.80 mm (1.414 * width)
+const PERF_ALONG_RATIO = 1.98 / 4.75;
+const PERF_ACROSS_TO_ALONG = 2.8 / 1.98;
+
+export interface SprocketGeometry {
+  holes: Rect[];
+  pitch: number;
+  holeAlong: number;
+  holeAcross: number;
+}
+
+export function computeSprocketHoles(
+  bandRect: Rect,
+  orientation: 'horizontal' | 'vertical',
+  holeCount: number,
+  scale: number,
+): SprocketGeometry {
+  const safeCount = Math.max(1, Math.round(holeCount));
+
+  if (orientation === 'horizontal') {
+    const pitch = bandRect.width / safeCount;
+    const holeAlong = Math.max(2 * scale, pitch * PERF_ALONG_RATIO);
+    const holeAcross = Math.max(
+      2.5 * scale,
+      Math.min(bandRect.height * 0.78, holeAlong * PERF_ACROSS_TO_ALONG),
+    );
+    const y = bandRect.y + (bandRect.height - holeAcross) / 2;
+    const holes: Rect[] = [];
+
+    for (let i = 0; i < safeCount; i++) {
+      const centerX = bandRect.x + (i + 0.5) * pitch;
+      holes.push({
+        x: centerX - holeAlong / 2,
+        y,
+        width: holeAlong,
+        height: holeAcross,
+      });
+    }
+
+    return { holes, pitch, holeAlong, holeAcross };
+  }
+
+  const pitch = bandRect.height / safeCount;
+  const holeAlong = Math.max(2 * scale, pitch * PERF_ALONG_RATIO);
+  const holeAcross = Math.max(
+    2.5 * scale,
+    Math.min(bandRect.width * 0.78, holeAlong * PERF_ACROSS_TO_ALONG),
+  );
+  const x = bandRect.x + (bandRect.width - holeAcross) / 2;
+  const holes: Rect[] = [];
+
+  for (let i = 0; i < safeCount; i++) {
+    const centerY = bandRect.y + (i + 0.5) * pitch;
+    holes.push({
+      x,
+      y: centerY - holeAlong / 2,
+      width: holeAcross,
+      height: holeAlong,
+    });
+  }
+
+  return { holes, pitch, holeAlong, holeAcross };
+}
+
+export function computeSprocketBandThickness(
+  estimatedSpan: number,
+  holeCount: number,
+  maxAllowedThickness: number,
+  scale: number,
+): number {
+  const pitch = estimatedSpan / Math.max(1, holeCount);
+  const idealHoleAcross = pitch * PERF_ALONG_RATIO * PERF_ACROSS_TO_ALONG;
+  const idealBand = idealHoleAcross / 0.74 + 16 * scale;
+  const minBand = 92 * scale;
+  return Math.round(Math.max(minBand, Math.min(maxAllowedThickness, idealBand)));
+}
+
 export function drawRoundedRectPath(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -30,36 +111,17 @@ export function drawSprocketRow(
   orientation: 'horizontal' | 'vertical',
   holeFill: string,
   scale: number,
+  holeCount = FULL_FRAME_SPROCKET_COUNT,
 ): void {
+  const { holes } = computeSprocketHoles(stripRect, orientation, holeCount, scale);
+  const radius = Math.max(1.5, 6 * scale);
+
   ctx.save();
   ctx.fillStyle = holeFill;
-
-  if (orientation === 'horizontal') {
-    const holeW = Math.max(4, stripRect.height * 0.42);
-    const holeH = Math.max(5, stripRect.height * 0.56);
-    const step = holeW * 2.05;
-    const radius = Math.max(1.5, 4 * scale);
-    const startOffset = ((stripRect.width % step) + step * 0.5) / 2;
-    const yTop = stripRect.y + (stripRect.height - holeH) / 2;
-
-    for (let x = stripRect.x + startOffset; x + holeW <= stripRect.x + stripRect.width - 8 * scale; x += step) {
-      drawRoundedRectPath(ctx, x, yTop, holeW, holeH, radius);
-      ctx.fill();
-    }
-  } else {
-    const holeW = Math.max(5, stripRect.width * 0.56);
-    const holeH = Math.max(4, stripRect.width * 0.42);
-    const step = holeH * 2.05;
-    const radius = Math.max(1.5, 4 * scale);
-    const startOffset = ((stripRect.height % step) + step * 0.5) / 2;
-    const xLeft = stripRect.x + (stripRect.width - holeW) / 2;
-
-    for (let y = stripRect.y + startOffset; y + holeH <= stripRect.y + stripRect.height - 8 * scale; y += step) {
-      drawRoundedRectPath(ctx, xLeft, y, holeW, holeH, radius);
-      ctx.fill();
-    }
+  for (const hole of holes) {
+    drawRoundedRectPath(ctx, hole.x, hole.y, hole.width, hole.height, radius);
+    ctx.fill();
   }
-
   ctx.restore();
 }
 

@@ -1,5 +1,7 @@
 import { drawRotatedImage, fitRectInBox, getRotatedDimensions } from '../renderer/layout';
 import {
+  FULL_FRAME_SPROCKET_COUNT,
+  computeSprocketBandThickness,
   drawEdgeMarkings,
   drawRoundedRectPath,
   drawSprocketRow,
@@ -9,7 +11,7 @@ import type { FrameTemplate } from './types';
 export const filmStrip35mmTemplate: FrameTemplate = {
   id: '35mm-sprocket',
   name: '35mm Strip',
-  shortDescription: 'Sprocket holes & edge markings',
+  shortDescription: '8-perf full-frame strip & edge markings',
   supportsDiptych: false,
   usesCustomFooter: false,
   render(ctx, { frameRegion, scale, primaryImage, metadata, visibility, palette }) {
@@ -20,9 +22,21 @@ export const filmStrip35mmTemplate: FrameTemplate = {
     );
     const isLandscape = rotDims.width >= rotDims.height;
 
-    const sprocketBand = Math.round(92 * scale);
-    const textBand = Math.round(40 * scale);
+    const textBand = Math.round(42 * scale);
     const sidePad = Math.round(28 * scale);
+    const roughPhoto = fitRectInBox(rotDims.width, rotDims.height, frameRegion, 150 * scale);
+    const estimatedSpan = isLandscape
+      ? roughPhoto.width + sidePad * 2
+      : roughPhoto.height + sidePad * 2;
+    const maxBandThickness = isLandscape
+      ? Math.min(200 * scale, frameRegion.height * 0.18)
+      : Math.min(200 * scale, frameRegion.width * 0.18);
+    const sprocketBand = computeSprocketBandThickness(
+      estimatedSpan,
+      FULL_FRAME_SPROCKET_COUNT,
+      maxBandThickness,
+      scale,
+    );
 
     // Reserve sprocket + marking bands around the photo area to derive strip dimensions
     const innerBox = isLandscape
@@ -80,22 +94,24 @@ export const filmStrip35mmTemplate: FrameTemplate = {
     if (isLandscape) {
       drawSprocketRow(
         ctx,
-        { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 16 * scale },
+        { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 14 * scale },
         'horizontal',
         holeColor,
         scale,
+        FULL_FRAME_SPROCKET_COUNT,
       );
       drawSprocketRow(
         ctx,
         {
           x: stripRect.x,
-          y: stripRect.y + stripRect.height - sprocketBand + 6 * scale,
+          y: stripRect.y + stripRect.height - sprocketBand + 4 * scale,
           width: stripRect.width,
-          height: sprocketBand - 16 * scale,
+          height: sprocketBand - 14 * scale,
         },
         'horizontal',
         holeColor,
         scale,
+        FULL_FRAME_SPROCKET_COUNT,
       );
       drawEdgeMarkings(
         ctx,
@@ -116,22 +132,24 @@ export const filmStrip35mmTemplate: FrameTemplate = {
     } else {
       drawSprocketRow(
         ctx,
-        { x: stripRect.x + 10 * scale, y: stripRect.y, width: sprocketBand - 16 * scale, height: stripRect.height },
+        { x: stripRect.x + 10 * scale, y: stripRect.y, width: sprocketBand - 14 * scale, height: stripRect.height },
         'vertical',
         holeColor,
         scale,
+        FULL_FRAME_SPROCKET_COUNT,
       );
       drawSprocketRow(
         ctx,
         {
-          x: stripRect.x + stripRect.width - sprocketBand + 6 * scale,
+          x: stripRect.x + stripRect.width - sprocketBand + 4 * scale,
           y: stripRect.y,
-          width: sprocketBand - 16 * scale,
+          width: sprocketBand - 14 * scale,
           height: stripRect.height,
         },
         'vertical',
         holeColor,
         scale,
+        FULL_FRAME_SPROCKET_COUNT,
       );
       drawEdgeMarkings(
         ctx,

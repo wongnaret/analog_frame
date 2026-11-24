@@ -1,4 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import {
+  FULL_FRAME_SPROCKET_COUNT,
+  HALF_FRAME_SPROCKET_COUNT,
+  computeSprocketHoles,
+} from './drawFilmHelpers';
 import { DEFAULT_TEMPLATE_ID, getTemplate, TEMPLATES } from './registry';
 
 describe('template registry', () => {
@@ -18,5 +23,40 @@ describe('template registry', () => {
     expect(getTemplate('half-frame-diptych').supportsDiptych).toBe(true);
     expect(getTemplate('half-frame-single').supportsDiptych).toBe(false);
     expect(getTemplate('editorial-card').usesCustomFooter).toBe(true);
+  });
+});
+
+describe('35mm sprocket geometry', () => {
+  it('renders 8 perforations for full-frame 35mm and diptych strips with 4 per half-frame', () => {
+    const stripBand = { x: 100, y: 100, width: 1866, height: 190 };
+    const full = computeSprocketHoles(stripBand, 'horizontal', FULL_FRAME_SPROCKET_COUNT, 1);
+
+    expect(full.holes).toHaveLength(8);
+    // Real 135 perforation is taller across the strip than wide along it
+    expect(full.holes[0].height).toBeGreaterThan(full.holes[0].width);
+    // 4 holes lie purely left of center septum, 4 holes lie purely right of center septum
+    const midX = stripBand.x + stripBand.width / 2;
+    expect(full.holes.filter((h) => h.x + h.width < midX)).toHaveLength(4);
+    expect(full.holes.filter((h) => h.x > midX)).toHaveLength(4);
+  });
+
+  it('renders 4 perforations for single half-frame strips (both horizontal and vertical)', () => {
+    const horiz = computeSprocketHoles(
+      { x: 100, y: 100, width: 1200, height: 210 },
+      'horizontal',
+      HALF_FRAME_SPROCKET_COUNT,
+      1,
+    );
+    expect(horiz.holes).toHaveLength(4);
+    expect(horiz.holes[0].height).toBeGreaterThan(horiz.holes[0].width);
+
+    const vert = computeSprocketHoles(
+      { x: 100, y: 100, width: 210, height: 1200 },
+      'vertical',
+      HALF_FRAME_SPROCKET_COUNT,
+      1,
+    );
+    expect(vert.holes).toHaveLength(4);
+    expect(vert.holes[0].width).toBeGreaterThan(vert.holes[0].height);
   });
 });

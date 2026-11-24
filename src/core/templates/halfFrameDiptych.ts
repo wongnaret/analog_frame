@@ -1,5 +1,7 @@
 import { drawRotatedImage, fitRectInBox, getRotatedDimensions } from '../renderer/layout';
 import {
+  FULL_FRAME_SPROCKET_COUNT,
+  computeSprocketBandThickness,
   drawEdgeMarkings,
   drawRoundedRectPath,
   drawSprocketRow,
@@ -9,18 +11,24 @@ import type { FrameTemplate } from './types';
 export const halfFrameDiptychTemplate: FrameTemplate = {
   id: 'half-frame-diptych',
   name: 'Half-Frame Diptych',
-  shortDescription: 'Dual side-by-side 35mm diptych',
+  shortDescription: '8-perf dual half-frame 35mm diptych',
   supportsDiptych: true,
   usesCustomFooter: false,
   render(ctx, { frameRegion, scale, primaryImage, secondaryImage, metadata, visibility, palette }) {
-    const sprocketBand = Math.round(84 * scale);
-    const textBand = Math.round(36 * scale);
-    const sidePad = Math.round(28 * scale);
-    const septumGap = Math.round(22 * scale);
+    const textBand = Math.round(40 * scale);
+    // Keep sidePad = septumGap / 2 so 4 perforations align cleanly over each half-frame
+    const septumGap = Math.round(28 * scale);
+    const sidePad = Math.round(septumGap / 2);
 
-    // Constrain full diptych strip inside frameRegion with 3:2-ish outer proportions
     const maxStripW = frameRegion.width;
-    const maxStripH = Math.min(frameRegion.height, Math.round(frameRegion.width * 0.78));
+    const maxStripH = Math.min(frameRegion.height, Math.round(frameRegion.width * 0.86));
+    const sprocketBand = computeSprocketBandThickness(
+      maxStripW,
+      FULL_FRAME_SPROCKET_COUNT,
+      Math.min(200 * scale, maxStripH * 0.18),
+      scale,
+    );
+
     const stripW = maxStripW;
     const stripH = maxStripH;
     const stripX = frameRegion.x + (frameRegion.width - stripW) / 2;
@@ -48,25 +56,27 @@ export const halfFrameDiptychTemplate: FrameTemplate = {
 
     const holeColor = palette.id === 'darkroom' ? '#070708' : palette.background;
 
-    // Top & bottom sprocket rows
+    // Top & bottom 8-perf sprocket rows (4 perforations per half-frame)
     drawSprocketRow(
       ctx,
-      { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 16 * scale },
+      { x: stripRect.x, y: stripRect.y + 10 * scale, width: stripRect.width, height: sprocketBand - 14 * scale },
       'horizontal',
       holeColor,
       scale,
+      FULL_FRAME_SPROCKET_COUNT,
     );
     drawSprocketRow(
       ctx,
       {
         x: stripRect.x,
-        y: stripRect.y + stripRect.height - sprocketBand + 6 * scale,
+        y: stripRect.y + stripRect.height - sprocketBand + 4 * scale,
         width: stripRect.width,
-        height: sprocketBand - 16 * scale,
+        height: sprocketBand - 14 * scale,
       },
       'horizontal',
       holeColor,
       scale,
+      FULL_FRAME_SPROCKET_COUNT,
     );
 
     const contentTop = stripRect.y + sprocketBand + textBand;

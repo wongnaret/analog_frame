@@ -104,6 +104,14 @@ export function FrameControls({
           <div className="mb-2 flex items-center justify-between">
             <h4 className="text-xs font-semibold uppercase tracking-wider">
               Diptych 2nd Frame
+              {otherPhotos.length > 0 && (
+                <span
+                  className="ml-1.5 font-mono-tech text-[10px] font-normal"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
+                  ({otherPhotos.length})
+                </span>
+              )}
             </h4>
             <input
               ref={partnerInputRef}
@@ -137,17 +145,21 @@ export function FrameControls({
               Upload a second photo to pair side-by-side inside this 35mm diptych strip.
             </p>
           ) : (
-            <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+            <div className="grid max-h-48 grid-cols-5 gap-2 overflow-y-auto p-0.5 pr-1 sm:grid-cols-6">
               {otherPhotos.map((candidate) => {
                 const selected = photo.settings.diptychPartnerId === candidate.id;
+                const badgeLabel =
+                  candidate.metadata.frameNumber ||
+                  `#${photos.findIndex((p) => p.id === candidate.id) + 1}`;
                 return (
                   <button
                     key={candidate.id}
                     type="button"
+                    title={candidate.fileName}
                     onClick={() =>
                       onSelectDiptychPartner(selected ? null : candidate.id)
                     }
-                    className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition"
+                    className="relative aspect-square w-full overflow-hidden rounded-lg border-2 transition"
                     style={{
                       borderColor: selected
                         ? 'var(--accent-amber)'
@@ -159,6 +171,9 @@ export function FrameControls({
                       alt={candidate.fileName}
                       className="h-full w-full object-cover"
                     />
+                    <span className="font-mono-tech absolute bottom-0.5 right-0.5 rounded bg-black/70 px-1 py-px text-[9px] font-semibold leading-tight text-white">
+                      {badgeLabel}
+                    </span>
                   </button>
                 );
               })}

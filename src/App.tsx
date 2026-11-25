@@ -1,7 +1,8 @@
-import { Download, Film, Sliders, Tag } from 'lucide-react';
+import { Download, Film, MessageSquareText, Sliders, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { CanvasControls } from './components/CanvasControls';
 import { CanvasPreview } from './components/CanvasPreview';
+import { CaptionControls } from './components/CaptionControls';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { EmptyUploadState } from './components/EmptyUploadState';
 import { ExportControls } from './components/ExportControls';
@@ -9,6 +10,7 @@ import { FilmstripQueue } from './components/FilmstripQueue';
 import { FrameControls } from './components/FrameControls';
 import { Header } from './components/Header';
 import { MetadataControls } from './components/MetadataControls';
+import { copyTextToClipboard } from './core/caption/generator';
 import {
   buildExportFilename,
   exportBatchAsZip,
@@ -18,18 +20,21 @@ import {
 } from './core/export/exporter';
 import { generateSamplePhotoFile } from './core/sample/generateSamplePhoto';
 import { useAnalogFrameStore } from './state/useAnalogFrameStore';
+import { useCaptionManager } from './state/useCaptionManager';
 
-type InspectorTab = 'frame' | 'canvas' | 'metadata' | 'export';
+type InspectorTab = 'frame' | 'canvas' | 'metadata' | 'caption' | 'export';
 
 const TABS: Array<{ id: InspectorTab; label: string; icon: typeof Film }> = [
   { id: 'frame', label: 'Frame', icon: Film },
   { id: 'canvas', label: 'Canvas', icon: Sliders },
   { id: 'metadata', label: 'Metadata', icon: Tag },
+  { id: 'caption', label: 'Caption', icon: MessageSquareText },
   { id: 'export', label: 'Export', icon: Download },
 ];
 
 export function App() {
   const store = useAnalogFrameStore();
+  const captionManager = useCaptionManager(store.selectedPhoto);
   const [activeTab, setActiveTab] = useState<InspectorTab>('frame');
   const [isExporting, setIsExporting] = useState(false);
   const [zipProgress, setZipProgress] = useState<{
@@ -156,7 +161,7 @@ export function App() {
             >
               {/* Desktop Tab Bar */}
               <div
-                className="mb-5 hidden grid-cols-4 gap-1 rounded-xl border p-1 lg:grid"
+                className="mb-5 hidden grid-cols-5 gap-1 rounded-xl border p-1 lg:grid"
                 style={{
                   backgroundColor: 'var(--bg-elevated)',
                   borderColor: 'var(--border-subtle)',
@@ -272,6 +277,26 @@ export function App() {
                 />
               )}
 
+              {activeTab === 'caption' && captionManager.draft && (
+                <CaptionControls
+                  draft={captionManager.draft}
+                  prefs={captionManager.prefs}
+                  isGeneratingAi={captionManager.isGeneratingAi}
+                  aiError={captionManager.aiError}
+                  onChangeText={captionManager.setCaptionText}
+                  onAddHashtag={captionManager.addHashtag}
+                  onRemoveHashtag={captionManager.removeHashtag}
+                  onToggleOpeningLine={captionManager.toggleOpeningLine}
+                  onToggleScanner={captionManager.toggleScanner}
+                  onSelectMood={captionManager.setMood}
+                  onChangeContextNote={captionManager.setContextNote}
+                  onChangeGeminiKey={captionManager.setGeminiApiKey}
+                  onShuffleOpeningLine={captionManager.shuffleOpeningLine}
+                  onGenerateWithAi={() => void captionManager.generateWithAi()}
+                  onResetFromExif={captionManager.resetFromExif}
+                />
+              )}
+
               {activeTab === 'export' && (
                 <ExportControls
                   photo={selectedPhoto}
@@ -288,6 +313,11 @@ export function App() {
                   }
                   onDownloadCurrent={() => void handleExportCurrent('download')}
                   onExportAllZip={() => void handleExportAllZip()}
+                  onCopyCaption={() =>
+                    copyTextToClipboard(
+                      captionManager.getCaptionForPhoto(selectedPhoto),
+                    )
+                  }
                 />
               )}
             </div>
@@ -299,7 +329,7 @@ export function App() {
       {selectedPhoto && (
         <nav
           aria-label="Editor tabs"
-          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t backdrop-blur-md lg:hidden"
+          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t backdrop-blur-md lg:hidden"
           style={{
             backgroundColor: 'color-mix(in srgb, var(--bg-app) 92%, transparent)',
             borderColor: 'var(--border-subtle)',
@@ -313,7 +343,7 @@ export function App() {
                 key={id}
                 type="button"
                 onClick={() => setActiveTab(id)}
-                className="flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-medium transition"
+                className="flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition"
                 style={{
                   color: active
                     ? 'var(--accent-amber)'

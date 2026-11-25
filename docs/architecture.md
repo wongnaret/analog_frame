@@ -19,9 +19,10 @@ analog_frame/
     │   ├── presets/            # Aspect ratios, matte palettes, film stocks, localStorage gear
     │   ├── templates/          # Modular frame template registry & 6 renderers
     │   ├── renderer/           # Layered Canvas 2D engine, fit math & typography
+    │   ├── caption/            # IG caption formatter, @flk.analog hashtags & Gemini BYOK client
     │   ├── export/             # JPEG/PNG encoder, Web Share API, ZIP bundler
     │   └── sample/             # In-browser sample film scan generator with EXIF
-    ├── state/                  # React store hook (useAnalogFrameStore)
+    ├── state/                  # React store hooks (useAnalogFrameStore, useCaptionManager)
     ├── components/             # Mobile-first Darkroom UI components
     ├── App.tsx                 # Responsive studio shell (Desktop 2-col / Mobile tabs)
     ├── main.tsx                # Application bootstrap
@@ -40,6 +41,7 @@ analog_frame/
 - **`src/core/presets/cookieConsent.ts`**: Persists and reads cookie/local-storage consent (`accepted` or `essential`) across `localStorage` and `document.cookie`.
 - **`src/core/renderer/layout.ts`**: Pure geometry (`computeCanvasLayout`, `fitRectInBox`, `getRotatedDimensions`, `drawRotatedImage`) ensuring zero-crop fitting at any scale.
 - **`src/core/templates/registry.ts`**: Central template registry (`TEMPLATES`, `getTemplate`). Adding a new frame style only requires implementing `FrameTemplate` and registering it here.
+- **`src/core/caption/`**: Modular Instagram caption engine (`hashtags.ts`, `openingLines.ts`, `generator.ts`, `storage.ts`, `geminiClient.ts`) producing `@flk.analog`-style captions, 8–12 dynamic camera/film hashtags, clipboard helpers, and optional browser-side BYOK Gemini 2.5 Flash vision generation.
 - **`src/core/export/exporter.ts`**: Handles high-resolution rendering (`scale = 1`), EXIF re-injection, `navigator.share({ files })` on mobile, and sequential low-memory ZIP creation via `fflate`.
 
 ---

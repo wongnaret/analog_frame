@@ -1,4 +1,5 @@
-import { Archive, Download, Share2 } from 'lucide-react';
+import { Archive, Check, Copy, Download, Share2 } from 'lucide-react';
+import { useState } from 'react';
 import { getAspectRatioPreset } from '../core/presets/aspectRatios';
 import type { ExportFormat, ExportOptions, PhotoItem } from '../core/types';
 
@@ -13,6 +14,7 @@ interface ExportControlsProps {
   onShareOrSaveCurrent: () => void;
   onDownloadCurrent: () => void;
   onExportAllZip: () => void;
+  onCopyCaption: () => Promise<boolean>;
 }
 
 export function ExportControls({
@@ -26,8 +28,18 @@ export function ExportControls({
   onShareOrSaveCurrent,
   onDownloadCurrent,
   onExportAllZip,
+  onCopyCaption,
 }: ExportControlsProps) {
   const preset = getAspectRatioPreset(photo.settings.aspectRatioId);
+  const [captionCopied, setCaptionCopied] = useState(false);
+
+  const handleCopyCaptionClick = async () => {
+    const ok = await onCopyCaption();
+    if (ok) {
+      setCaptionCopied(true);
+      setTimeout(() => setCaptionCopied(false), 2000);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -165,6 +177,20 @@ export function ExportControls({
             </span>
           </button>
         )}
+
+        <button
+          type="button"
+          onClick={() => void handleCopyCaptionClick()}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-semibold transition hover:opacity-85"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: captionCopied ? 'var(--accent-amber)' : 'var(--border-subtle)',
+            color: captionCopied ? 'var(--accent-amber)' : 'var(--text-primary)',
+          }}
+        >
+          {captionCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          <span>{captionCopied ? 'IG Caption Copied!' : 'Copy IG Caption'}</span>
+        </button>
       </div>
 
       {statusMessage && (

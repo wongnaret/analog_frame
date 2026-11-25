@@ -45,7 +45,14 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
 - Previously used gear is saved locally in your browser (or tap **Save Gear** manually) as quick-pick chips under `Camera`, `Lens`, `Scanner`, and `Film Stock`.
 - Tap **Apply Gear to All** to copy `Camera`, `Lens`, `Scanner`, `Film Stock`, `ISO / EI`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
 
-### Step 5: Export for Instagram (`Export` Tab)
+### Step 5: Generate & Copy IG Caption (`Caption` Tab)
+- Open the **Caption** tab to review your auto-generated Instagram caption (`Camera`, `Lens` when filled, `Film`, and 8–12 curated hashtags tailored to your camera and film stock).
+- Toggle **Opening Line** *(default OFF)* to add a stoic/vintage English opening line, pick a **Vibe / Mood** (`Auto`, `Stoic`, `Light`, `Street`, `Mechanical`, `Night`, `B&W`), shuffle lines, or optionally enter a personal **Gemini API Key (BYOK)** to analyze the photo directly from your browser.
+- Toggle **Include Scanner** *(default OFF)* if you want `Scanner:` included in the caption text.
+- Edit any text freely in the **Instagram Caption** textarea, click `×` on hashtag chips to remove tags, or add custom `#hashtags` (saved locally for quick reuse).
+- Tap **Copy IG Caption** (also available as a shortcut inside the **Export** tab).
+
+### Step 6: Export for Instagram (`Export` Tab)
 - Choose **JPEG (95%)** *(recommended)* or **PNG (Lossless)**.
 - Keep **Preserve EXIF in JPEG** enabled so saved photos retain their original shooting date and camera/film tags in Apple Photos or Google Photos.
 - **Single Photo**:

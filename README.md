@@ -9,6 +9,7 @@ A lean, 100% browser-side, mobile-first PWA for framing scanned analog film phot
 - **Split Typography & Footer Watermark**: Large, mobile-readable labeled footer placing `CAMERA: ... · LENS: ...` (line 1) and `SCANNER: ...` (line 2) on the left, with `FILM: ...` and `ISO: ...` on the right, paired with an editable footer watermark (`ANALOG FRAME` by default, remembered in `localStorage`).
 - **No-Crop Fit + Rotation**: Keeps your full scanned frame intact with 90° rotation support.
 - **EXIF Read & Re-Inject**: Reads `Make`, `Model`, `LensModel`, `ISO`, `DateTimeOriginal`, `Artist`, and `Film: <stock> | EI: <iso>` tags, lets you fill missing fields with curated film presets & saved gear, and writes key EXIF back into exported JPEGs so photo libraries preserve shooting dates.
+- **IG Caption Generator (`@flk.analog`)**: Dedicated `Caption` tab generates ready-to-copy minimalist English captions and 8–12 curated camera/film hashtags from EXIF (with optional Opening Line & Scanner toggles, editable hashtag chips, localStorage memory, and optional BYOK Gemini 2.5 Flash image analysis).
 - **Mobile-First PWA**: Installable on iOS/Android, works offline, supports native **Web Share** ("Save Image") and **Batch ZIP** export.
 
 ## Quick Start

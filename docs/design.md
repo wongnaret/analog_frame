@@ -13,7 +13,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 1. **Layer 1 — Outer IG Canvas & Matte**:
    - Guarantees an exact Instagram-friendly aspect ratio regardless of the scanned photo's proportions (35mm 3:2, half-frame 3:4, medium format 6×6 / 6×7, or panoramic).
    - **Never crops** the film scan; the inner frame fits cleanly inside the matte with balanced margins.
-   - Hosts crisp, mobile-legible **English typography** in a labeled split left/right footer region (`CAMERA: ... · LENS: ...` on line 1 left, `SCANNER: ...` on line 2 left; `FILM: ...` and `ISO: ...` on the right), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
+   - Hosts crisp, mobile-legible **English typography** in a labeled split left/right footer region (`CAMERA: ... · LENS: ...` and `SCANNER: ...` on the left; `FILM: ...` and `ISO: ...` on the right for **Film** mode — or `CAMERA: ...` / `LENS: ...` on the left and `<FOCAL> · <APERTURE> · <SHUTTER>` / `ISO: ...` on the right for **Digital** mode), except `editorial-card`, which embeds a dedicated spec card directly inside the frame.
    - Displays a subtle tracked **Footer Watermark** (`ANALOG FRAME` by default, customizable and remembered in `localStorage`) along the bottom edge.
 2. **Layer 2 — Inner Film Frame Template**:
    - Renders authentic analog borders around the scanned photo (sprockets, rebate notches, edge markings, matte hairlines, or half-frame diptych septum).
@@ -41,7 +41,7 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 3. **Film Rebate (`film-rebate`)**:
    - Sprocket-free black negative border with subtle film-gate notches and minimal edge markings.
 4. **Editorial Spec Card (`editorial-card`)**:
-   - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `ISO`, `DATE`, `ARTIST`).
+   - Warm archival card framing the photo with a structured, bold typography specification block underneath (`CAMERA`, `LENS`, `FILM`, `ISO`, `DATE`, `ARTIST` in Film mode; `CAMERA`, `LENS`, `FOCAL`, `APERTURE`, `SHUTTER`, `ISO`, `DATE`, `ARTIST` in Digital mode).
 5. **Half-Frame Single (`half-frame-single`)**:
    - Authentic 35mm half-frame strip featuring **4 rounded sprocket holes** along the narrow 17–18 mm edges (top/bottom on portrait half-frames, left/right on rotated landscape half-frames) with outer-margin film emulsion name and frame markers.
 6. **Half-Frame Diptych (`half-frame-diptych`)**:
@@ -50,8 +50,10 @@ Every exported image combines two distinct visual layers inside an Instagram-exa
 ---
 
 ## 4. Metadata & Film Presets
-- **Primary Fields** (shown on frame): `Camera` (`Make` + `Model`), `Lens`, `Scanner` (defaults to `Noritsu HS-1800`), `Film Stock`, `ISO`.
-- **Optional Toggle Fields**: `Date`, `Artist`, `Frame No.`, `Custom Caption`.
+- **Capture Modes (`Film` | `Digital`)**: Auto-detected from EXIF (`Film` when `Film:`/`Scanner` markers exist or when no digital exposure/body markers are found; `Digital` when known digital models or electronic exposure telemetry `FocalLength` / `FNumber` / `ExposureTime` exist without film/scanner markers), with a manual toggle in the `Metadata` tab.
+- **Primary Fields (Film Mode)**: `Camera` (`Make` + `Model`), `Lens`, `Scanner` (defaults to `Noritsu HS-1800`), `Film Stock`, `ISO`.
+- **Primary Fields (Digital Mode)**: `Camera`, `Lens`, `Focal` (`35mm`), `Aperture` (`f/1.4`), `Shutter` (`1/500s`), `ISO` (`Scanner`, `Film Stock`, and `Frame No.` are hidden).
+- **Optional Toggle Fields**: `Date`, `Artist`, `Frame No.` (Film mode), `Custom Caption`.
 - **EXIF Auto-Detection**: Automatically parses tags written by `fix_exif/fix_exif.ps1` (`Film: <stock> | EI: <iso>` inside `ImageDescription` / `UserComment` / `XMP:Description`) as well as standard camera EXIF.
 - **Quick-Fill & Gear Memory**:
   - Curated dropdown of ~20 popular 35mm/120 film stocks with automatic ISO inference.

@@ -58,13 +58,17 @@ export const editorialCardTemplate: FrameTemplate = {
     const specWidth = cardWidth - cardPad * 2;
     let cursorY = photoRect.y + photoRect.height + 42 * scale;
 
-    // Film brand accent rule
+    const isDigital = metadata.mode === 'digital';
+
+    // Film / Camera brand accent rule
     ctx.save();
-    ctx.fillStyle = getFilmAccentColor(metadata.filmStock);
+    ctx.fillStyle = isDigital ? '#E8A838' : getFilmAccentColor(metadata.filmStock);
     ctx.fillRect(specLeft, cursorY - 20 * scale, Math.round(74 * scale), Math.round(6 * scale));
 
-    // Title (Camera or Film)
-    const headline = (metadata.filmStock.trim() || metadata.camera.trim() || 'ANALOG ARCHIVE').toUpperCase();
+    // Title
+    const headline = isDigital
+      ? (metadata.camera.trim() || 'DIGITAL ARCHIVE').toUpperCase()
+      : (metadata.filmStock.trim() || metadata.camera.trim() || 'ANALOG ARCHIVE').toUpperCase();
     ctx.fillStyle = palette.primaryText;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
@@ -78,13 +82,22 @@ export const editorialCardTemplate: FrameTemplate = {
     cursorY += titleSize + 20 * scale;
 
     // 2-column spec rows
-    const specs: Array<[string, string]> = [
-      ['CAMERA', metadata.camera.trim() || '—'],
-      ['LENS', metadata.lens.trim() || '—'],
-      ['EXPOSURE', metadata.iso.trim() ? `ISO ${metadata.iso.trim()}` : '—'],
-    ];
+    const specs: Array<[string, string]> = isDigital
+      ? [
+          ['LENS', metadata.lens.trim() || '—'],
+          ['ISO', metadata.iso.trim() || '—'],
+        ]
+      : [
+          ['CAMERA', metadata.camera.trim() || '—'],
+          ['LENS', metadata.lens.trim() || '—'],
+          ['EXPOSURE', metadata.iso.trim() ? `ISO ${metadata.iso.trim()}` : '—'],
+        ];
 
-    if (metadata.scanner?.trim()) {
+    if (isDigital) {
+      if (metadata.focalLength?.trim()) specs.push(['FOCAL', metadata.focalLength.trim()]);
+      if (metadata.aperture?.trim()) specs.push(['APERTURE', metadata.aperture.trim()]);
+      if (metadata.shutterSpeed?.trim()) specs.push(['SHUTTER', metadata.shutterSpeed.trim()]);
+    } else if (metadata.scanner?.trim()) {
       specs.push(['SCANNER', metadata.scanner.trim()]);
     }
 
@@ -94,7 +107,7 @@ export const editorialCardTemplate: FrameTemplate = {
     if (visibility.showArtist && metadata.artist.trim()) {
       specs.push(['ARTIST', metadata.artist.trim()]);
     }
-    if (visibility.showFrameNumber && metadata.frameNumber.trim()) {
+    if (!isDigital && visibility.showFrameNumber && metadata.frameNumber.trim()) {
       specs.push(['FRAME', `#${metadata.frameNumber.trim()}`]);
     }
 

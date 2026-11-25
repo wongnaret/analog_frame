@@ -1,4 +1,4 @@
-import type { ExifDetectedFlags, PhotoMetadata } from '../types';
+import type { ExifDetectedFlags, PhotoMetadata, PhotoMode } from '../types';
 
 export interface ParsedExifResult {
   metadata: PhotoMetadata;
@@ -217,6 +217,95 @@ function extractScannerFromSoftware(softwareRaw: unknown): string {
   return software;
 }
 
+export function formatFocalLength(raw: unknown): string {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+    const rounded = Number.isInteger(raw) ? String(raw) : String(Number(raw.toFixed(1)));
+    return `${rounded}mm`;
+  }
+  const str = cleanString(raw);
+  if (!str) return '';
+  if (/mm$/i.test(str)) return str;
+  const num = Number.parseFloat(str);
+  if (Number.isFinite(num) && num > 0) {
+    const rounded = Number.isInteger(num) ? String(num) : String(Number(num.toFixed(1)));
+    return `${rounded}mm`;
+  }
+  return str;
+}
+
+export function formatAperture(raw: unknown): string {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+    const val = Number.isInteger(raw) ? String(raw) : String(Number(raw.toFixed(1)));
+    return `f/${val}`;
+  }
+  const str = cleanString(raw);
+  if (!str) return '';
+  if (/^f\//i.test(str)) return `f/${str.slice(2)}`;
+  const num = Number.parseFloat(str);
+  if (Number.isFinite(num) && num > 0) {
+    const val = Number.isInteger(num) ? String(num) : String(Number(num.toFixed(1)));
+    return `f/${val}`;
+  }
+  return str;
+}
+
+export function formatShutterSpeed(raw: unknown): string {
+  if (typeof raw === 'number' && Number.isFinite(raw) && raw > 0) {
+    if (raw >= 1) {
+      const val = Number.isInteger(raw) ? String(raw) : String(Number(raw.toFixed(1)));
+      return `${val}s`;
+    }
+    const denom = Math.round(1 / raw);
+    if (denom >= 1) return `1/${denom}s`;
+  }
+  const str = cleanString(raw);
+  if (!str) return '';
+  if (/^\d+\/\d+s?$/i.test(str)) return str.endsWith('s') ? str : `${str}s`;
+  const num = Number.parseFloat(str);
+  if (Number.isFinite(num) && num > 0) {
+    if (num >= 1) {
+      const val = Number.isInteger(num) ? String(num) : String(Number(num.toFixed(1)));
+      return `${val}s`;
+    }
+    const denom = Math.round(1 / num);
+    if (denom >= 1) return `1/${denom}s`;
+  }
+  return str;
+}
+
+const KNOWN_FILM_CAMERA_PATTERN =
+  /pentax\s*17|praktica|nikon\s*f[2-6]?|nikon\s*fm|nikon\s*fe|leica\s*m[2-7]|olympus\s*om-?[1-4]|olympus\s*pen(?!\s*(?:e-?p|f))|contax\s*[tg]|yashica|minolta\s*(?:x-?700|srt|cle)|canon\s*(?:ae-?1|a-?1|f-?1|ql17)|rollei|hasselblad\s*500|mamiya\s*(?:6|7|rz|rb)/i;
+
+const KNOWN_DIGITAL_CAMERA_PATTERN =
+  /iphone|pixel|samsung|sm-|sony|ilce|dsc-|fujifilm\s*x|x100|gfx|ricoh\s*gr|canon\s*eos\s*(?:r|\d+d|m)|nikon\s*(?:z|d\d)|leica\s*(?:q|sl|m1[01]|m9|m8|m240)|lumix|dc-|om-?1\s*mark|e-m|x-t|x-pro|x-e|x-s/i;
+
+export function detectPhotoMode(input: {
+  filmStock: string;
+  scanner: string;
+  camera: string;
+  focalLength: string;
+  aperture: string;
+  shutterSpeed: string;
+}): PhotoMode {
+  if (input.filmStock.trim() || input.scanner.trim()) {
+    return 'film';
+  }
+  if (
+    input.camera.trim() &&
+    KNOWN_FILM_CAMERA_PATTERN.test(input.camera) &&
+    !KNOWN_DIGITAL_CAMERA_PATTERN.test(input.camera)
+  ) {
+    return 'film';
+  }
+  if (input.camera.trim() && KNOWN_DIGITAL_CAMERA_PATTERN.test(input.camera)) {
+    return 'digital';
+  }
+  if (input.aperture.trim() || input.shutterSpeed.trim() || input.focalLength.trim()) {
+    return 'digital';
+  }
+  return 'film';
+}
+
 export function parseAnalogExif(
   raw: Record<string, unknown> | null | undefined,
   fileName?: string,
@@ -226,6 +315,14 @@ export function parseAnalogExif(
   const camera = combineCameraName(data.Make ?? data.make, data.Model ?? data.model);
   const lens = cleanString(data.LensModel ?? data.Lens ?? data.lensModel ?? data.lens);
   const scanner = extractScannerFromSoftware(data.Software ?? data.software);
+
+  const focalLength = formatFocalLength(
+    data.FocalLength ?? data.FocalLengthIn35mmFormat ?? data.focalLength,
+  );
+  const aperture = formatAperture(data.FNumber ?? data.ApertureValue ?? data.fNumber);
+  const shutterSpeed = formatShutterSpeed(
+    data.ExposureTime ?? data.ShutterSpeedValue ?? data.exposureTime,
+  );
 
   const descriptionCandidates = [
     cleanString(data.ImageDescription),
@@ -244,6 +341,15 @@ export function parseAnalogExif(
     if (parsed.frameNumber && !frameFromText) frameFromText = parsed.frameNumber;
   }
 
+  const mode = detectPhotoMode({
+    filmStock,
+    scanner,
+    camera,
+    focalLength,
+    aperture,
+    shutterSpeed,
+  });
+
   const frameFromTag =
     normalizeFrameNumber(data.ImageNumber) ||
     normalizeFrameNumber(data.FrameNumber) ||
@@ -254,7 +360,7 @@ export function parseAnalogExif(
   const frameNumber =
     frameFromTag ||
     frameFromText ||
-    (fileName ? extractFrameNumberFromFileName(fileName) : '');
+    (mode === 'film' && fileName ? extractFrameNumberFromFileName(fileName) : '');
   const frameDetectedFromExif = Boolean(frameFromTag || frameFromText);
 
   const rawIso =
@@ -272,11 +378,15 @@ export function parseAnalogExif(
 
   return {
     metadata: {
+      mode,
       camera,
       lens,
       scanner,
       filmStock,
       iso: isoValue,
+      focalLength,
+      aperture,
+      shutterSpeed,
       date,
       exifDateTime,
       artist,
@@ -289,6 +399,9 @@ export function parseAnalogExif(
       scanner: Boolean(scanner),
       filmStock: Boolean(filmStock),
       iso: Boolean(isoValue),
+      focalLength: Boolean(focalLength),
+      aperture: Boolean(aperture),
+      shutterSpeed: Boolean(shutterSpeed),
       date: Boolean(date),
       artist: Boolean(artist),
       frameNumber: frameDetectedFromExif,

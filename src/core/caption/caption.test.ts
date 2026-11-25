@@ -17,15 +17,36 @@ import {
 } from './storage';
 
 const BASE_META: PhotoMetadata = {
+  mode: 'film',
   camera: 'Pentax 17',
   lens: '25mm F3.5',
   scanner: 'Noritsu HS-1800',
   filmStock: 'Ilford HP5 Plus 400',
   iso: '400',
+  focalLength: '',
+  aperture: '',
+  shutterSpeed: '',
   date: '2026-09-13',
   exifDateTime: '2026:09:13 12:00:00',
   artist: '',
   frameNumber: '17A',
+  caption: '',
+};
+
+const DIGITAL_META: PhotoMetadata = {
+  mode: 'digital',
+  camera: 'Sony A7C II',
+  lens: 'FE 35mm F1.4 GM',
+  scanner: '',
+  filmStock: '',
+  iso: '400',
+  focalLength: '35mm',
+  aperture: 'f/1.4',
+  shutterSpeed: '1/500s',
+  date: '2026-09-13',
+  exifDateTime: '2026:09:13 12:00:00',
+  artist: '',
+  frameNumber: '',
   caption: '',
 };
 
@@ -108,6 +129,27 @@ describe('formatInstagramCaption & syncHashtagsInCaptionText', () => {
     const synced = syncHashtagsInCaptionText(edited, ['#35mmfilm', '#nikonf3', '#bangkokfilm']);
     expect(synced).toBe(
       'Custom note from Bangkok.\n\nCamera: Nikon F3\nFilm: Kodak Gold 200\n\n#35mmfilm #nikonf3 #bangkokfilm',
+    );
+  });
+
+  it('formats digital mode captions with Settings and digital hashtags without film tags', () => {
+    const tags = buildDefaultHashtags(DIGITAL_META, 'minimal-matte');
+    expect(tags.length).toBeGreaterThanOrEqual(8);
+    expect(tags.length).toBeLessThanOrEqual(12);
+    expect(tags).toContain('#digitalphotography');
+    expect(tags).toContain('#sonyalpha');
+    expect(tags).not.toContain('#35mmfilm');
+
+    const caption = formatInstagramCaption({
+      openingLine: 'Quiet frames after dusk.',
+      includeOpeningLine: false,
+      includeScanner: true,
+      metadata: DIGITAL_META,
+      hashtags: tags.slice(0, 3),
+    });
+
+    expect(caption).toBe(
+      `Camera: Sony A7C II\nLens: FE 35mm F1.4 GM\nSettings: 35mm · f/1.4 · 1/500s · ISO 400\n\n${tags.slice(0, 3).join(' ')}`,
     );
   });
 });

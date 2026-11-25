@@ -14,6 +14,8 @@ export type RotationDegrees = 0 | 90 | 180 | 270;
 
 export type ExportFormat = 'jpeg' | 'png';
 
+export type PhotoMode = 'film' | 'digital';
+
 export interface AspectRatioPreset {
   id: AspectRatioId;
   label: string;
@@ -42,11 +44,15 @@ export interface FilmStockPreset {
 }
 
 export interface PhotoMetadata {
+  mode: PhotoMode;
   camera: string;
   lens: string;
   scanner: string;
   filmStock: string;
   iso: string;
+  focalLength: string;
+  aperture: string;
+  shutterSpeed: string;
   date: string; // YYYY-MM-DD
   exifDateTime: string; // YYYY:MM:DD HH:MM:SS
   artist: string;
@@ -78,6 +84,9 @@ export interface ExifDetectedFlags {
   scanner: boolean;
   filmStock: boolean;
   iso: boolean;
+  focalLength: boolean;
+  aperture: boolean;
+  shutterSpeed: boolean;
   date: boolean;
   artist: boolean;
   frameNumber: boolean;

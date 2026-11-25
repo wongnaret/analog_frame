@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import exifr from 'exifr';
 import {
   buildExifFilmDescription,
+  detectPhotoMode,
   extractFrameNumberFromFileName,
   incrementFrameNumber,
   parseAnalogExif,
@@ -38,10 +39,66 @@ describe('parseAnalogExif', () => {
       scanner: false,
       filmStock: true,
       iso: true,
+      focalLength: false,
+      aperture: false,
+      shutterSpeed: false,
       date: true,
       artist: true,
       frameNumber: false,
     });
+    expect(metadata.mode).toBe('film');
+  });
+
+  it('auto-detects digital cameras with exposure telemetry and ignores digital filename counters', () => {
+    const { metadata, detected } = parseAnalogExif(
+      {
+        Make: 'SONY',
+        Model: 'ILCE-7CM2',
+        LensModel: 'FE 35mm F1.4 GM',
+        FocalLength: 35,
+        FNumber: 1.4,
+        ExposureTime: 0.002,
+        ISO: 400,
+      },
+      'DSC0017.JPG',
+    );
+
+    expect(metadata.mode).toBe('digital');
+    expect(metadata.focalLength).toBe('35mm');
+    expect(metadata.aperture).toBe('f/1.4');
+    expect(metadata.shutterSpeed).toBe('1/500s');
+    expect(metadata.iso).toBe('400');
+    expect(metadata.scanner).toBe('');
+    expect(metadata.frameNumber).toBe('');
+    expect(detected.focalLength).toBe(true);
+    expect(detected.aperture).toBe(true);
+    expect(detected.shutterSpeed).toBe(true);
+    expect(detected.frameNumber).toBe(false);
+  });
+
+  it('keeps explicit film/scanner scans in film mode even when exposure tags exist, and defaults EXIF-less uploads to film', () => {
+    const taggedFilm = parseAnalogExif({
+      Make: 'Nikon',
+      Model: 'F3',
+      Software: 'Noritsu HS-1800',
+      FNumber: 2.8,
+      ExposureTime: 0.008,
+    });
+    expect(taggedFilm.metadata.mode).toBe('film');
+
+    const emptyScan = parseAnalogExif(undefined);
+    expect(emptyScan.metadata.mode).toBe('film');
+
+    expect(
+      detectPhotoMode({
+        filmStock: '',
+        scanner: '',
+        camera: 'FUJIFILM X100VI',
+        focalLength: '23mm',
+        aperture: 'f/2',
+        shutterSpeed: '1/250s',
+      }),
+    ).toBe('digital');
   });
 
   it('extracts frame number from EXIF ImageNumber / UserComment and filename fallbacks', () => {
@@ -139,11 +196,15 @@ describe('camera & film helpers', () => {
 describe('writeExifToJpegDataUrl round-trip', () => {
   it('writes key metadata into JPEG and survives exifr read-back', async () => {
     const taggedDataUrl = writeExifToJpegDataUrl(MINIMAL_1X1_JPEG_DATA_URL, {
+      mode: 'film',
       camera: 'Pentax 17',
       lens: '25mm F3.5',
       scanner: 'Frontier SP-3000',
       filmStock: 'Kodak Portra 400',
       iso: '400',
+      focalLength: '',
+      aperture: '',
+      shutterSpeed: '',
       date: '2026-09-13',
       exifDateTime: '2026:09:13 17:42:00',
       artist: 'Wongnaret',

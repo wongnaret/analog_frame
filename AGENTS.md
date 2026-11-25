@@ -5,8 +5,8 @@ These rules govern all development and AI-assisted work in this repository.
 ## 1. Core Principles
 - **100% Client-Side & Lean**: All image decoding, EXIF parsing, Canvas 2D framing, EXIF re-injection, and ZIP packaging run in the user's browser with zero backend dependencies. Keep bundle size and runtime memory lean (especially for mobile Safari/Chrome).
 - **English UI & Typography**: All web application UI copy, labels, and rendered frame typography must be in English.
-- **Film-First Aesthetic**: Respect original scanned film aspect ratios — fit photos cleanly inside frames without cropping by default, and keep typography subtle and authentic.
-- **Default Canvas**: `3:4` Profile Grid (`2160 × 2880`) on a crisp white outer matte with the `minimal-matte` frame template and `Noritsu HS-1800` default scanner.
+- **Film-First Aesthetic (Film + Digital Aware)**: Respect original photo aspect ratios without cropping by default, auto-detect `film` vs `digital` capture mode from EXIF, omit film/scanner metadata in `digital` mode, and keep typography subtle and authentic.
+- **Default Canvas**: `3:4` Profile Grid (`2160 × 2880`) on a crisp white outer matte with the `minimal-matte` frame template (`Noritsu HS-1800` default scanner for `film` mode).
 
 ## 2. Never Commit ExifTool Binaries
 - `fix_exif/exiftool.exe` and `fix_exif/exiftool_files/` MUST remain ignored in `.gitignore`.
@@ -20,6 +20,7 @@ These rules govern all development and AI-assisted work in this repository.
   - `src/core/presets/` — IG aspect ratios, matte palettes, film stocks, `localStorage` gear history
   - `src/core/templates/` — modular frame template registry and individual frame renderers
   - `src/core/renderer/` — layered HTML5 Canvas 2D layout & typography engine
+  - `src/core/caption/` — `@flk.analog` IG caption formatter, hashtags, localStorage preferences & Gemini BYOK client
   - `src/core/export/` — JPEG/PNG encoding, Web Share API, and ZIP batch export
 - **`src/state/`** manages React state cleanly on top of `src/core/`.
 - **`src/components/`** contains focused, mobile-first UI components.

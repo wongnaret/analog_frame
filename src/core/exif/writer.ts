@@ -41,19 +41,21 @@ export function writeExifToJpegDataUrl(
     if (safeModel) zeroth[piexif.ImageIFD.Model] = safeModel;
   }
 
-  const desc = toAsciiSafe(buildExifFilmDescription(metadata.filmStock, metadata.iso));
-  const safeFrame = toAsciiSafe(metadata.frameNumber).replace(/^#/, '');
-  const userCommentParts = [desc, safeFrame ? `Frame: ${safeFrame}` : ''].filter(Boolean);
-  if (desc) {
-    zeroth[piexif.ImageIFD.ImageDescription] = desc;
-  }
-  if (userCommentParts.length > 0) {
-    exif[piexif.ExifIFD.UserComment] = `ASCII\0\0\0${userCommentParts.join(' | ')}`;
-  }
+  if (metadata.mode !== 'digital') {
+    const desc = toAsciiSafe(buildExifFilmDescription(metadata.filmStock, metadata.iso));
+    const safeFrame = toAsciiSafe(metadata.frameNumber).replace(/^#/, '');
+    const userCommentParts = [desc, safeFrame ? `Frame: ${safeFrame}` : ''].filter(Boolean);
+    if (desc) {
+      zeroth[piexif.ImageIFD.ImageDescription] = desc;
+    }
+    if (userCommentParts.length > 0) {
+      exif[piexif.ExifIFD.UserComment] = `ASCII\0\0\0${userCommentParts.join(' | ')}`;
+    }
 
-  const parsedFrameNum = Number.parseInt(safeFrame, 10);
-  if (Number.isFinite(parsedFrameNum) && parsedFrameNum >= 0 && piexif.ImageIFD.ImageNumber) {
-    zeroth[piexif.ImageIFD.ImageNumber] = parsedFrameNum;
+    const parsedFrameNum = Number.parseInt(safeFrame, 10);
+    if (Number.isFinite(parsedFrameNum) && parsedFrameNum >= 0 && piexif.ImageIFD.ImageNumber) {
+      zeroth[piexif.ImageIFD.ImageNumber] = parsedFrameNum;
+    }
   }
 
   if (metadata.artist.trim()) {

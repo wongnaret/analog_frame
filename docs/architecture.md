@@ -51,11 +51,15 @@ analog_frame/
 
 | Analog Frame Field | Read Priority (`exifr` tags) | Written Back to Exported JPEG (`piexifjs`) |
 | :--- | :--- | :--- |
+| `mode` | `detectPhotoMode()` (`Film:` / `Scanner` markers force `film`; digital camera models or electronic exposure tags without film/scanner markers select `digital`; empty EXIF defaults to `film`) | Derived at runtime (controls whether film/scanner tags are written) |
 | `camera` | `Make` + `Model` (deduplicated if `Model` already starts with `Make`) | `0th.Make` + `0th.Model` (split on first whitespace) |
 | `lens` | `LensModel`, `Lens` | `Exif.LensModel` (`0xA434`) |
-| `filmStock` | `Film: <stock> \| EI: <iso>` parsed from `ImageDescription`, `UserComment`, `XMP:Description` | `0th.ImageDescription` & `Exif.UserComment` (`Film: <stock> \| EI: <iso> \| Frame: <no>`) |
+| `focalLength` | `FocalLength`, `FocalLengthIn35mmFormat` (formatted as `<n>mm`) | Preserved visually in Digital mode frames |
+| `aperture` | `FNumber`, `ApertureValue` (formatted as `f/<n>`) | Preserved visually in Digital mode frames |
+| `shutterSpeed` | `ExposureTime`, `ShutterSpeedValue` (formatted as `1/<n>s` or `<n>s`) | Preserved visually in Digital mode frames |
+| `filmStock` | `Film: <stock> \| EI: <iso>` parsed from `ImageDescription`, `UserComment`, `XMP:Description` | Film mode only: `0th.ImageDescription` & `Exif.UserComment` (`Film: <stock> \| EI: <iso> \| Frame: <no>`) |
 | `iso` | `EI` from `Film: ... \| EI: ...`, fallback to `ISO` / `ISOSpeedRatings` / `PhotographicSensitivity` | `Exif.ISOSpeedRatings` (integer) |
-| `frameNumber` | `ImageNumber` (`0x9211`), `FrameNumber`, `Frame: <no>` in comment, or lab-scan filename fallback | `0th.ImageNumber` (`0x9211`) & `Frame: <no>` in `Exif.UserComment` |
+| `frameNumber` | Film mode only: `ImageNumber` (`0x9211`), `FrameNumber`, `Frame: <no>` in comment, or lab-scan filename fallback | Film mode only: `0th.ImageNumber` (`0x9211`) & `Frame: <no>` in `Exif.UserComment` |
 | `date` / `exifDateTime` | `DateTimeOriginal`, `CreateDate`, `ModifyDate` (formatted in local wall-clock time to prevent UTC shifts) | `0th.DateTime`, `Exif.DateTimeOriginal`, `Exif.DateTimeDigitized` |
 | `artist` | `Artist`, `Copyright` | `0th.Artist`, `0th.Copyright` |
 

@@ -143,8 +143,11 @@ export function useAnalogFrameStore() {
             ]);
 
             const seqNum = String(startCount + i + 1).padStart(2, '0');
+            const isFilmMode = exif.metadata.mode === 'film';
             const inferredIso =
-              exif.metadata.iso || inferIsoFromFilmStock(exif.metadata.filmStock) || '';
+              exif.metadata.iso ||
+              (isFilmMode ? inferIsoFromFilmStock(exif.metadata.filmStock) : '') ||
+              '';
 
             loadedItems.push({
               id: createId(),
@@ -156,9 +159,9 @@ export function useAnalogFrameStore() {
               exifDetected: exif.detected,
               metadata: {
                 ...exif.metadata,
-                scanner: exif.metadata.scanner || DEFAULT_SCANNER,
+                scanner: exif.metadata.scanner || (isFilmMode ? DEFAULT_SCANNER : ''),
                 iso: inferredIso,
-                frameNumber: exif.metadata.frameNumber || `${seqNum}A`,
+                frameNumber: exif.metadata.frameNumber || (isFilmMode ? `${seqNum}A` : ''),
               },
               settings: {
                 templateId: defaultTemplate,
@@ -350,6 +353,7 @@ export function useAnalogFrameStore() {
         ...item,
         metadata: {
           ...item.metadata,
+          mode: source.metadata.mode,
           camera: source.metadata.camera,
           lens: source.metadata.lens,
           scanner: source.metadata.scanner,

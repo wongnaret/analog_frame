@@ -43,11 +43,15 @@ describe('formatSplitFooterLines', () => {
   it('places camera + lens on line 1 left, scanner on line 2 left, and film + ISO on the right', () => {
     const lines = formatSplitFooterLines(
       {
+        mode: 'film',
         camera: 'Pentax 17',
         lens: '25mm F3.5',
         scanner: 'Frontier SP-3000',
         filmStock: 'Ilford HP5 Plus 400',
         iso: '400',
+        focalLength: '',
+        aperture: '',
+        shutterSpeed: '',
         date: '2026-09-13',
         exifDateTime: '2026:09:13 12:00:00',
         artist: 'Edd',
@@ -73,11 +77,15 @@ describe('formatSplitFooterLines', () => {
   it('handles missing camera or scanner cleanly and respects hidden toggles', () => {
     const lines = formatSplitFooterLines(
       {
+        mode: 'film',
         camera: '',
         lens: '50mm f/1.8',
         scanner: '',
         filmStock: 'Kodak Portra 400',
         iso: '400',
+        focalLength: '',
+        aperture: '',
+        shutterSpeed: '',
         date: '2026-09-13',
         exifDateTime: '2026:09:13 12:00:00',
         artist: 'Edd',
@@ -98,5 +106,39 @@ describe('formatSplitFooterLines', () => {
     expect(lines.rightPrimary).toBe('FILM: KODAK PORTRA 400');
     expect(lines.rightSecondary).toBe('ISO: 400');
     expect(lines.captionLine).toBe('');
+  });
+
+  it('formats digital mode with camera/lens on left and exposure settings + ISO on right', () => {
+    const lines = formatSplitFooterLines(
+      {
+        mode: 'digital',
+        camera: 'Sony A7C II',
+        lens: 'FE 35mm F1.4 GM',
+        scanner: '',
+        filmStock: '',
+        iso: '400',
+        focalLength: '35mm',
+        aperture: 'f/1.4',
+        shutterSpeed: '1/500s',
+        date: '2026-09-13',
+        exifDateTime: '2026:09:13 12:00:00',
+        artist: 'Edd',
+        frameNumber: '',
+        caption: 'Blue hour',
+      },
+      {
+        showDate: true,
+        showArtist: true,
+        showFrameNumber: true,
+        showCaption: true,
+        showWatermark: true,
+      },
+    );
+
+    expect(lines.leftPrimary).toBe('CAMERA: SONY A7C II');
+    expect(lines.leftSecondary).toBe('LENS: FE 35mm F1.4 GM  ·  ARTIST: Edd');
+    expect(lines.rightPrimary).toBe('35MM  ·  F/1.4  ·  1/500S');
+    expect(lines.rightSecondary).toBe('ISO: 400');
+    expect(lines.captionLine).toBe('Blue hour');
   });
 });

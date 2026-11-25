@@ -44,6 +44,8 @@ export function MetadataControls({
     }
   };
 
+  const isDigital = (metadata.mode ?? 'film') === 'digital';
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -95,6 +97,50 @@ export function MetadataControls({
               <span>Apply Gear to All</span>
             </button>
           )}
+        </div>
+      </div>
+
+      <div
+        className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2"
+        style={{
+          backgroundColor: 'var(--bg-elevated)',
+          borderColor: 'var(--border-subtle)',
+        }}
+      >
+        <div>
+          <span className="block text-[11px] font-semibold uppercase tracking-wider">
+            Capture Mode
+          </span>
+          <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
+            {isDigital
+              ? 'Digital EXIF (exposure settings, no film/scanner)'
+              : 'Film scan (stock, scanner & frame rebates)'}
+          </span>
+        </div>
+        <div
+          className="inline-flex rounded-md border p-0.5"
+          style={{
+            backgroundColor: 'var(--bg-surface)',
+            borderColor: 'var(--border-subtle)',
+          }}
+        >
+          {(['film', 'digital'] as const).map((modeOption) => {
+            const active = (metadata.mode ?? 'film') === modeOption;
+            return (
+              <button
+                key={modeOption}
+                type="button"
+                onClick={() => onUpdateMetadata({ mode: modeOption })}
+                className="rounded px-2.5 py-1 text-[11px] font-semibold capitalize transition"
+                style={{
+                  backgroundColor: active ? 'var(--accent-amber)' : 'transparent',
+                  color: active ? '#0d0d0f' : 'var(--text-secondary)',
+                }}
+              >
+                {modeOption}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -181,117 +227,194 @@ export function MetadataControls({
           )}
         </label>
 
-        <label className="block sm:col-span-2">
-          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
-            <span>Scanner</span>
-            {exifDetected.scanner && (
-              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
-                EXIF
+        {!isDigital ? (
+          <>
+            <label className="block sm:col-span-2">
+              <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+                <span>Scanner</span>
+                {exifDetected.scanner && (
+                  <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                    EXIF
+                  </span>
+                )}
               </span>
-            )}
-          </span>
-          <input
-            type="text"
-            value={metadata.scanner ?? ''}
-            onChange={(e) => onUpdateMetadata({ scanner: e.target.value })}
-            placeholder="e.g. Frontier SP-3000, Noritsu HS-1800"
-            className="w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
-            style={{
-              backgroundColor: 'var(--bg-elevated)',
-              borderColor: 'var(--border-subtle)',
-            }}
-          />
-          <div className="mt-1.5 flex flex-wrap gap-1">
-            {scannerSuggestions.map((scanner) => (
-              <button
-                key={scanner}
-                type="button"
-                onClick={() => onUpdateMetadata({ scanner })}
-                className="rounded border px-1.5 py-0.5 text-[10px] transition hover:opacity-80"
+              <input
+                type="text"
+                value={metadata.scanner ?? ''}
+                onChange={(e) => onUpdateMetadata({ scanner: e.target.value })}
+                placeholder="e.g. Frontier SP-3000, Noritsu HS-1800"
+                className="w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
                 style={{
-                  backgroundColor: 'var(--bg-surface)',
+                  backgroundColor: 'var(--bg-elevated)',
                   borderColor: 'var(--border-subtle)',
-                  color: 'var(--text-secondary)',
                 }}
-              >
-                {scanner}
-              </button>
-            ))}
-          </div>
-        </label>
+              />
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                {scannerSuggestions.map((scanner) => (
+                  <button
+                    key={scanner}
+                    type="button"
+                    onClick={() => onUpdateMetadata({ scanner })}
+                    className="rounded border px-1.5 py-0.5 text-[10px] transition hover:opacity-80"
+                    style={{
+                      backgroundColor: 'var(--bg-surface)',
+                      borderColor: 'var(--border-subtle)',
+                      color: 'var(--text-secondary)',
+                    }}
+                  >
+                    {scanner}
+                  </button>
+                ))}
+              </div>
+            </label>
 
-        <div className="sm:col-span-2">
-          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
-            <span>Film Stock</span>
-            {exifDetected.filmStock && (
-              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
-                EXIF
+            <div className="sm:col-span-2">
+              <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+                <span>Film Stock</span>
+                {exifDetected.filmStock && (
+                  <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                    EXIF
+                  </span>
+                )}
               </span>
-            )}
-          </span>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <input
-              type="text"
-              value={metadata.filmStock}
-              onChange={(e) => handleFilmChange(e.target.value)}
-              placeholder="e.g. Ilford HP5 Plus 400"
-              className="w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
-              style={{
-                backgroundColor: 'var(--bg-elevated)',
-                borderColor: 'var(--border-subtle)',
-              }}
-            />
-            <select
-              aria-label="Choose preset film stock"
-              value=""
-              onChange={(e) => {
-                if (e.target.value) {
-                  const preset = FILM_STOCK_PRESETS.find((f) => f.name === e.target.value);
-                  onUpdateMetadata({
-                    filmStock: e.target.value,
-                    iso: preset ? preset.defaultIso : metadata.iso,
-                  });
-                }
-              }}
-              className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
-              style={{
-                backgroundColor: 'var(--bg-elevated)',
-                borderColor: 'var(--border-subtle)',
-                color: 'var(--text-primary)',
-              }}
-            >
-              <option value="">Quick pick film stock...</option>
-              {FILM_STOCK_PRESETS.map((film) => (
-                <option key={film.name} value={film.name}>
-                  {film.name} ({film.type})
-                </option>
-              ))}
-            </select>
-          </div>
-          {gearHistory.filmStocks.length > 0 && (
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {gearHistory.filmStocks.slice(0, 4).map((stock) => (
-                <button
-                  key={stock}
-                  type="button"
-                  onClick={() => handleFilmChange(stock)}
-                  className="rounded border px-1.5 py-0.5 text-[10px] transition hover:opacity-80"
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <input
+                  type="text"
+                  value={metadata.filmStock}
+                  onChange={(e) => handleFilmChange(e.target.value)}
+                  placeholder="e.g. Ilford HP5 Plus 400"
+                  className="w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
                   style={{
-                    backgroundColor: 'var(--bg-surface)',
+                    backgroundColor: 'var(--bg-elevated)',
                     borderColor: 'var(--border-subtle)',
-                    color: 'var(--text-secondary)',
+                  }}
+                />
+                <select
+                  aria-label="Choose preset film stock"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const preset = FILM_STOCK_PRESETS.find((f) => f.name === e.target.value);
+                      onUpdateMetadata({
+                        filmStock: e.target.value,
+                        iso: preset ? preset.defaultIso : metadata.iso,
+                      });
+                    }
+                  }}
+                  className="w-full rounded-lg border px-3 py-2 text-xs outline-none"
+                  style={{
+                    backgroundColor: 'var(--bg-elevated)',
+                    borderColor: 'var(--border-subtle)',
+                    color: 'var(--text-primary)',
                   }}
                 >
-                  {stock}
-                </button>
-              ))}
+                  <option value="">Quick pick film stock...</option>
+                  {FILM_STOCK_PRESETS.map((film) => (
+                    <option key={film.name} value={film.name}>
+                      {film.name} ({film.type})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {gearHistory.filmStocks.length > 0 && (
+                <div className="mt-1.5 flex flex-wrap gap-1">
+                  {gearHistory.filmStocks.slice(0, 4).map((stock) => (
+                    <button
+                      key={stock}
+                      type="button"
+                      onClick={() => handleFilmChange(stock)}
+                      className="rounded border px-1.5 py-0.5 text-[10px] transition hover:opacity-80"
+                      style={{
+                        backgroundColor: 'var(--bg-surface)',
+                        borderColor: 'var(--border-subtle)',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
+                      {stock}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="grid grid-cols-3 gap-2 sm:col-span-2">
+            <label className="block">
+              <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+                <span>Focal</span>
+                {exifDetected.focalLength && (
+                  <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                    EXIF
+                  </span>
+                )}
+              </span>
+              <input
+                type="text"
+                value={metadata.focalLength}
+                onChange={(e) => onUpdateMetadata({ focalLength: e.target.value })}
+                placeholder="35mm"
+                className="font-mono-tech w-full rounded-lg border px-2.5 py-2 text-xs outline-none focus:ring-1"
+                style={{
+                  backgroundColor: 'var(--bg-elevated)',
+                  borderColor: 'var(--border-subtle)',
+                }}
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+                <span>Aperture</span>
+                {exifDetected.aperture && (
+                  <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                    EXIF
+                  </span>
+                )}
+              </span>
+              <input
+                type="text"
+                value={metadata.aperture}
+                onChange={(e) => onUpdateMetadata({ aperture: e.target.value })}
+                placeholder="f/1.4"
+                className="font-mono-tech w-full rounded-lg border px-2.5 py-2 text-xs outline-none focus:ring-1"
+                style={{
+                  backgroundColor: 'var(--bg-elevated)',
+                  borderColor: 'var(--border-subtle)',
+                }}
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+                <span>Shutter</span>
+                {exifDetected.shutterSpeed && (
+                  <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                    EXIF
+                  </span>
+                )}
+              </span>
+              <input
+                type="text"
+                value={metadata.shutterSpeed}
+                onChange={(e) => onUpdateMetadata({ shutterSpeed: e.target.value })}
+                placeholder="1/500s"
+                className="font-mono-tech w-full rounded-lg border px-2.5 py-2 text-xs outline-none focus:ring-1"
+                style={{
+                  backgroundColor: 'var(--bg-elevated)',
+                  borderColor: 'var(--border-subtle)',
+                }}
+              />
+            </label>
+          </div>
+        )}
 
         <label className="block">
-          <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider">
-            ISO / EI
+          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+            <span>{isDigital ? 'ISO' : 'ISO / EI'}</span>
+            {exifDetected.iso && (
+              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                EXIF
+              </span>
+            )}
           </span>
           <input
             type="text"
@@ -346,27 +469,29 @@ export function MetadataControls({
           />
         </label>
 
-        <label className="block">
-          <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
-            <span>Frame No.</span>
-            {exifDetected.frameNumber && (
-              <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
-                EXIF
-              </span>
-            )}
-          </span>
-          <input
-            type="text"
-            value={metadata.frameNumber}
-            onChange={(e) => onUpdateMetadata({ frameNumber: e.target.value })}
-            placeholder="01A"
-            className="font-mono-tech w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
-            style={{
-              backgroundColor: 'var(--bg-elevated)',
-              borderColor: 'var(--border-subtle)',
-            }}
-          />
-        </label>
+        {!isDigital && (
+          <label className="block">
+            <span className="mb-1 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider">
+              <span>Frame No.</span>
+              {exifDetected.frameNumber && (
+                <span className="font-mono-tech text-[10px]" style={{ color: 'var(--accent-amber)' }}>
+                  EXIF
+                </span>
+              )}
+            </span>
+            <input
+              type="text"
+              value={metadata.frameNumber}
+              onChange={(e) => onUpdateMetadata({ frameNumber: e.target.value })}
+              placeholder="01A"
+              className="font-mono-tech w-full rounded-lg border px-3 py-2 text-xs outline-none focus:ring-1"
+              style={{
+                backgroundColor: 'var(--bg-elevated)',
+                borderColor: 'var(--border-subtle)',
+              }}
+            />
+          </label>
+        )}
 
         <label className="block sm:col-span-2">
           <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wider">

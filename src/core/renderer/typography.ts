@@ -20,6 +20,44 @@ export function formatSplitFooterLines(
   const scanner = (metadata.scanner ?? '').trim();
   const artist = visibility.showArtist ? metadata.artist.trim() : '';
 
+  const captionLine =
+    visibility.showCaption && metadata.caption.trim()
+      ? metadata.caption.trim()
+      : '';
+
+  if (metadata.mode === 'digital') {
+    const leftPrimary = (
+      camera ? `CAMERA: ${camera}` : lens ? `LENS: ${lens}` : ''
+    ).toUpperCase();
+    const leftSecondary = [
+      camera && lens ? `LENS: ${lens}` : '',
+      artist ? `ARTIST: ${artist}` : '',
+    ]
+      .filter(Boolean)
+      .join('  ·  ');
+
+    const rightPrimary = [
+      metadata.focalLength?.trim() ?? '',
+      metadata.aperture?.trim() ?? '',
+      metadata.shutterSpeed?.trim() ?? '',
+    ]
+      .filter(Boolean)
+      .join('  ·  ')
+      .toUpperCase();
+
+    const rightSecondary = metadata.iso.trim()
+      ? `ISO: ${metadata.iso.trim()}`
+      : '';
+
+    return {
+      leftPrimary,
+      leftSecondary,
+      rightPrimary,
+      rightSecondary,
+      captionLine,
+    };
+  }
+
   const leftPrimary = [
     camera ? `CAMERA: ${camera}` : '',
     lens ? `LENS: ${lens}` : '',
@@ -41,11 +79,6 @@ export function formatSplitFooterLines(
   const rightSecondary = metadata.iso.trim()
     ? `ISO: ${metadata.iso.trim()}`
     : '';
-
-  const captionLine =
-    visibility.showCaption && metadata.caption.trim()
-      ? metadata.caption.trim()
-      : '';
 
   return {
     leftPrimary,

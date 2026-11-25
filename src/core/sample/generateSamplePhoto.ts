@@ -2,11 +2,15 @@ import { writeExifToJpegDataUrl } from '../exif/writer';
 import type { PhotoMetadata } from '../types';
 
 export const SAMPLE_METADATA: PhotoMetadata = {
+  mode: 'film',
   camera: 'Pentax 17',
   lens: '25mm F3.5',
   scanner: 'Noritsu HS-1800',
   filmStock: 'Kodak Portra 400',
   iso: '400',
+  focalLength: '',
+  aperture: '',
+  shutterSpeed: '',
   date: '2026-09-13',
   exifDateTime: '2026:09:13 17:42:00',
   artist: 'Analog Lab',

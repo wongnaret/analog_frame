@@ -21,11 +21,23 @@ export function formatInstagramCaption({
   if (metadata.lens.trim()) {
     specLines.push(`Lens: ${metadata.lens.trim()}`);
   }
-  if (metadata.filmStock.trim()) {
-    specLines.push(`Film: ${metadata.filmStock.trim()}`);
-  }
-  if (includeScanner && metadata.scanner?.trim()) {
-    specLines.push(`Scanner: ${metadata.scanner.trim()}`);
+  if (metadata.mode === 'digital') {
+    const settingsParts = [
+      metadata.focalLength?.trim() ?? '',
+      metadata.aperture?.trim() ?? '',
+      metadata.shutterSpeed?.trim() ?? '',
+      metadata.iso.trim() ? `ISO ${metadata.iso.trim()}` : '',
+    ].filter(Boolean);
+    if (settingsParts.length > 0) {
+      specLines.push(`Settings: ${settingsParts.join(' · ')}`);
+    }
+  } else {
+    if (metadata.filmStock.trim()) {
+      specLines.push(`Film: ${metadata.filmStock.trim()}`);
+    }
+    if (includeScanner && metadata.scanner?.trim()) {
+      specLines.push(`Scanner: ${metadata.scanner.trim()}`);
+    }
   }
 
   if (specLines.length > 0) {

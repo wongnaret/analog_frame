@@ -10,6 +10,16 @@ export const CORE_ANALOG_HASHTAGS: string[] = [
   '#filmcommunity',
 ];
 
+export const CORE_DIGITAL_HASHTAGS: string[] = [
+  '#photography',
+  '#digitalphotography',
+  '#streetphotography',
+  '#visualstorytelling',
+  '#lightandshadow',
+  '#minimalphotography',
+  '#photocommunity',
+];
+
 const FILM_HASHTAG_MAP: Array<[RegExp, string]> = [
   [/ilford\s+hp5/i, '#ilfordhp5'],
   [/ilford\s+fp4/i, '#ilfordfp4'],
@@ -136,16 +146,53 @@ export function buildCameraHashtags(
   return dedupeHashtags([slug, ...brandTags]).slice(0, 4);
 }
 
+export function buildDigitalCameraHashtags(camera: string): string[] {
+  const clean = camera.trim();
+  if (!clean) {
+    return ['#digitalcamera', '#rawphotography', '#streetshot'];
+  }
+
+  const slug = normalizeHashtag(clean);
+  const lower = clean.toLowerCase();
+  const brandTags: string[] = [];
+
+  if (/iphone/.test(lower)) {
+    brandTags.push('#shotoniphone', '#iphonephotography', '#mobilephotography');
+  } else if (/pixel/.test(lower)) {
+    brandTags.push('#teampixel', '#pixelphotography', '#mobilephotography');
+  } else if (/sony|ilce/.test(lower)) {
+    brandTags.push('#sonyalpha', '#sonyphotography', '#mirrorless');
+  } else if (/fuji/.test(lower)) {
+    brandTags.push('#fujifilm', '#fujixseries', '#fujilove');
+  } else if (/ricoh/.test(lower)) {
+    brandTags.push('#ricohgr', '#grsnaps', '#streetcamera');
+  } else if (/leica/.test(lower)) {
+    brandTags.push('#leicacamera', '#leicaphotography', '#rangefinder');
+  } else if (/canon/.test(lower)) {
+    brandTags.push('#canonphotography', '#canonr', '#mirrorless');
+  } else if (/nikon/.test(lower)) {
+    brandTags.push('#nikonphotography', '#nikonz', '#mirrorless');
+  } else {
+    brandTags.push('#digitalcamera', '#mirrorless', '#rawphotography');
+  }
+
+  return dedupeHashtags([slug, ...brandTags]).slice(0, 4);
+}
+
 /**
- * Generates 8 to 12 curated hashtags following @flk.analog rules:
- * - 5-7 core analog tags
- * - 3-5 camera-specific tags
- * - 1 optional film stock tag
+ * Generates 8 to 12 curated hashtags tailored to Film (@flk.analog) or Digital mode.
  */
 export function buildDefaultHashtags(
   metadata: PhotoMetadata,
   templateId?: TemplateId,
 ): string[] {
+  if (metadata.mode === 'digital') {
+    const cameraTags = buildDigitalCameraHashtags(metadata.camera);
+    const coreLimit = Math.max(5, Math.min(7, 12 - cameraTags.length));
+    const coreTags = CORE_DIGITAL_HASHTAGS.slice(0, coreLimit);
+    return dedupeHashtags([...coreTags, ...cameraTags]).slice(0, 12);
+  }
+
   const cameraTags = buildCameraHashtags(metadata.camera, templateId);
   const filmTag = buildFilmHashtag(metadata.filmStock);
 

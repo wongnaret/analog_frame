@@ -19,6 +19,43 @@
       rel="stylesheet"
     />
     <title>Analog Frame — Film Framing for Instagram</title>
+    <!-- Google tag (gtag.js) with Consent Mode v2 -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      window.gtag = gtag;
+
+      var storedConsent = null;
+      try {
+        storedConsent = localStorage.getItem('analog_frame_cookie_consent_v1');
+      } catch (e) {}
+      if (!storedConsent && typeof document !== 'undefined' && document.cookie) {
+        if (document.cookie.indexOf('analog_frame_consent=accepted') !== -1) {
+          storedConsent = 'accepted';
+        }
+      }
+
+      var isLocalHost =
+        location.hostname === 'localhost' ||
+        location.hostname === '127.0.0.1' ||
+        location.hostname === '[::1]';
+
+      gtag('consent', 'default', {
+        analytics_storage: storedConsent === 'accepted' ? 'granted' : 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500,
+      });
+
+      gtag('js', new Date());
+      if (!isLocalHost) {
+        gtag('config', 'G-M9GZQSXXPH', { send_page_view: true });
+      }
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9GZQSXXPH"></script>
   </head>
   <body>
     <div id="root"></div>

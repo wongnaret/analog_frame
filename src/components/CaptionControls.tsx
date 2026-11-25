@@ -35,6 +35,7 @@ interface CaptionControlsProps {
   onShuffleOpeningLine: () => void;
   onGenerateWithAi: () => void;
   onResetFromExif: () => void;
+  onAfterCopy?: () => void;
 }
 
 export function CaptionControls({
@@ -53,6 +54,7 @@ export function CaptionControls({
   onShuffleOpeningLine,
   onGenerateWithAi,
   onResetFromExif,
+  onAfterCopy,
 }: CaptionControlsProps) {
   const [newTagInput, setNewTagInput] = useState('');
   const [copied, setCopied] = useState(false);
@@ -62,6 +64,7 @@ export function CaptionControls({
     const ok = await copyTextToClipboard(draft.text);
     if (ok) {
       setCopied(true);
+      onAfterCopy?.();
       setTimeout(() => setCopied(false), 2000);
     }
   };

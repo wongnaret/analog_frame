@@ -1,5 +1,6 @@
 import { Cookie } from 'lucide-react';
 import { useState } from 'react';
+import { updateAnalyticsConsent } from '../core/analytics/ga4';
 import {
   loadCookieConsent,
   saveCookieConsent,
@@ -21,6 +22,7 @@ export function CookieConsentBanner({ hasPhotos }: CookieConsentBannerProps) {
 
   const handleChoose = (choice: CookieConsentChoice) => {
     saveCookieConsent(choice);
+    updateAnalyticsConsent(choice);
     setConsent(choice);
   };
 
@@ -57,8 +59,8 @@ export function CookieConsentBanner({ hasPhotos }: CookieConsentBannerProps) {
               style={{ color: 'var(--text-secondary)' }}
             >
               We use essential cookies and local browser storage to remember your
-              theme, gear presets, and watermark text. Your photos stay 100% on
-              your device.
+              theme, gear presets, and watermark text, plus optional anonymous
+              analytics (GA4) when accepted. Your photos stay 100% on your device.
             </p>
           </div>
         </div>

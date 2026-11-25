@@ -10,6 +10,14 @@ import { FilmstripQueue } from './components/FilmstripQueue';
 import { FrameControls } from './components/FrameControls';
 import { Header } from './components/Header';
 import { MetadataControls } from './components/MetadataControls';
+import {
+  trackBatchZipExport,
+  trackCaptionCopy,
+  trackCaptureModeSwitch,
+  trackFrameExport,
+  trackPhotoUpload,
+  trackTemplateSelect,
+} from './core/analytics/ga4';
 import { copyTextToClipboard } from './core/caption/generator';
 import {
   buildExportFilename,
@@ -50,9 +58,17 @@ export function App() {
         null
       : null;
 
+  const handleAddFiles = async (files: FileList | File[]) => {
+    await store.addFiles(files);
+    if (files.length > 0) {
+      trackPhotoUpload({ count: files.length });
+    }
+  };
+
   const handleLoadSample = async () => {
     const file = await generateSamplePhotoFile();
     await store.addFiles([file], { selectAdded: true });
+    trackPhotoUpload({ count: 1, isSample: true });
   };
 
   const handleExportCurrent = async (mode: 'share-or-download' | 'download') => {
@@ -75,6 +91,11 @@ export function App() {
       if (mode === 'download') {
         triggerBlobDownload(blob, filename);
         setStatusMessage(`Downloaded ${filename}`);
+        trackFrameExport({
+          photo: selectedPhoto,
+          format: store.exportOptions.format,
+          delivery: 'download',
+        });
       } else {
         const outcome = await shareOrDownloadBlob(blob, filename);
         setStatusMessage(
@@ -84,6 +105,13 @@ export function App() {
               ? 'Share cancelled'
               : `Saved ${filename}`,
         );
+        if (outcome !== 'cancelled') {
+          trackFrameExport({
+            photo: selectedPhoto,
+            format: store.exportOptions.format,
+            delivery: outcome === 'shared' ? 'share' : 'download',
+          });
+        }
       }
     } catch (error) {
       setStatusMessage(
@@ -104,6 +132,13 @@ export function App() {
         setZipProgress({ completed, total });
       });
       setStatusMessage(`Exported ${store.photos.length} frames to ZIP`);
+      if (selectedPhoto) {
+        trackBatchZipExport({
+          count: store.photos.length,
+          photo: selectedPhoto,
+          format: store.exportOptions.format,
+        });
+      }
     } catch (error) {
       setStatusMessage(
         error instanceof Error ? error.message : 'ZIP export failed',
@@ -120,7 +155,7 @@ export function App() {
         photoCount={store.photos.length}
         theme={store.theme}
         onToggleTheme={store.toggleTheme}
-        onAddFiles={(files) => void store.addFiles(files)}
+        onAddFiles={(files) => void handleAddFiles(files)}
         onQuickExport={() => void handleExportCurrent('share-or-download')}
         isExporting={isExporting}
       />
@@ -128,7 +163,7 @@ export function App() {
       {!selectedPhoto ? (
         <EmptyUploadState
           isLoading={store.isLoadingFiles}
-          onAddFiles={(files) => void store.addFiles(files)}
+          onAddFiles={(files) => void handleAddFiles(files)}
           onLoadSample={() => void handleLoadSample()}
         />
       ) : (
@@ -146,7 +181,7 @@ export function App() {
               selectedId={selectedPhoto.id}
               onSelect={store.setSelectedId}
               onRemove={store.removePhoto}
-              onAddFiles={(files) => void store.addFiles(files)}
+              onAddFiles={(files) => void handleAddFiles(files)}
             />
           </section>
 
@@ -195,9 +230,10 @@ export function App() {
                 <FrameControls
                   photo={selectedPhoto}
                   photos={store.photos}
-                  onSelectTemplate={(templateId) =>
-                    store.updateSettings(selectedPhoto.id, { templateId })
-                  }
+                  onSelectTemplate={(templateId) => {
+                    store.updateSettings(selectedPhoto.id, { templateId });
+                    trackTemplateSelect(templateId);
+                  }}
                   onSelectDiptychPartner={(diptychPartnerId) =>
                     store.updateSettings(selectedPhoto.id, { diptychPartnerId })
                   }
@@ -252,9 +288,12 @@ export function App() {
                   photo={selectedPhoto}
                   totalPhotos={store.photos.length}
                   gearHistory={store.gearHistory}
-                  onUpdateMetadata={(patch) =>
-                    store.updateMetadata(selectedPhoto.id, patch)
-                  }
+                  onUpdateMetadata={(patch) => {
+                    store.updateMetadata(selectedPhoto.id, patch);
+                    if (patch.mode) {
+                      trackCaptureModeSwitch(patch.mode);
+                    }
+                  }}
                   onChangeWatermarkText={(watermarkText) =>
                     store.updateSettings(selectedPhoto.id, { watermarkText })
                   }
@@ -294,6 +333,14 @@ export function App() {
                   onShuffleOpeningLine={captionManager.shuffleOpeningLine}
                   onGenerateWithAi={() => void captionManager.generateWithAi()}
                   onResetFromExif={captionManager.resetFromExif}
+                  onAfterCopy={() =>
+                    trackCaptionCopy({
+                      photo: selectedPhoto,
+                      hasOpeningLine: captionManager.prefs.includeOpeningLine,
+                      hashtagCount: captionManager.draft?.hashtags.length ?? 0,
+                      source: 'caption_tab',
+                    })
+                  }
                 />
               )}
 
@@ -313,11 +360,20 @@ export function App() {
                   }
                   onDownloadCurrent={() => void handleExportCurrent('download')}
                   onExportAllZip={() => void handleExportAllZip()}
-                  onCopyCaption={() =>
-                    copyTextToClipboard(
+                  onCopyCaption={async () => {
+                    const ok = await copyTextToClipboard(
                       captionManager.getCaptionForPhoto(selectedPhoto),
-                    )
-                  }
+                    );
+                    if (ok) {
+                      trackCaptionCopy({
+                        photo: selectedPhoto,
+                        hasOpeningLine: captionManager.prefs.includeOpeningLine,
+                        hashtagCount: captionManager.draft?.hashtags.length ?? 0,
+                        source: 'export_tab',
+                      });
+                    }
+                    return ok;
+                  }}
                 />
               )}
             </div>

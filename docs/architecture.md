@@ -15,6 +15,7 @@ analog_frame/
 └── src/
     ├── core/                   # Framework-agnostic TypeScript modules (reusable)
     │   ├── types/              # Shared TypeScript interfaces and types
+    │   ├── analytics/          # Consent-gated GA4 helper (G-M9GZQSXXPH)
     │   ├── exif/               # EXIF parser (exifr) & JPEG EXIF writer (piexifjs)
     │   ├── presets/            # Aspect ratios, matte palettes, film stocks, localStorage gear
     │   ├── templates/          # Modular frame template registry & 6 renderers
@@ -39,6 +40,7 @@ analog_frame/
 - **`src/core/exif/writer.ts`**: Injects key metadata back into exported JPEG Data URLs/Blobs using `piexifjs`, sanitizing ASCII-only tags safely.
 - **`src/core/presets/gearStorage.ts`**: Persists previously used `cameras`, `lenses`, `scanners`, `filmStocks`, `artists`, and the last-edited footer `watermarkText` in `localStorage`.
 - **`src/core/presets/cookieConsent.ts`**: Persists and reads cookie/local-storage consent (`accepted` or `essential`) across `localStorage` and `document.cookie`.
+- **`src/core/analytics/ga4.ts`**: Consent-gated Google Analytics 4 (`G-M9GZQSXXPH`) event helper using Google Consent Mode v2 (disabled on `localhost` / `127.0.0.1`, fires anonymized `photo_upload`, `select_template`, `switch_capture_mode`, `export_frame`, `export_zip`, and `copy_ig_caption` events with `template_id`, `capture_mode`, `camera`, `lens`, and `film_stock` only when consent is `accepted`).
 - **`src/core/renderer/layout.ts`**: Pure geometry (`computeCanvasLayout`, `fitRectInBox`, `getRotatedDimensions`, `drawRotatedImage`) ensuring zero-crop fitting at any scale.
 - **`src/core/templates/registry.ts`**: Central template registry (`TEMPLATES`, `getTemplate`). Adding a new frame style only requires implementing `FrameTemplate` and registering it here.
 - **`src/core/caption/`**: Modular Instagram caption engine (`hashtags.ts`, `openingLines.ts`, `generator.ts`, `storage.ts`, `geminiClient.ts`) producing `@flk.analog`-style captions, up to 5 sharp camera/film or digital hashtags, clipboard helpers, and optional browser-side BYOK Gemini 2.5 Flash vision generation.

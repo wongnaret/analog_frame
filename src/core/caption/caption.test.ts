@@ -73,14 +73,16 @@ describe('caption hashtags rules (@flk.analog)', () => {
     ]);
   });
 
-  it('produces 8 to 12 deduplicated hashtags including core, camera, and film tags', () => {
+  it('produces up to 5 sharp deduplicated hashtags including core, camera, and film tags', () => {
     const tags = buildDefaultHashtags(BASE_META, 'half-frame-single');
-    expect(tags.length).toBeGreaterThanOrEqual(8);
-    expect(tags.length).toBeLessThanOrEqual(12);
-    expect(tags).toContain('#35mmfilm');
-    expect(tags).toContain('#pentax17');
-    expect(tags).toContain('#halfframe');
-    expect(tags).toContain('#ilfordhp5');
+    expect(tags.length).toBe(5);
+    expect(tags).toEqual([
+      '#35mmfilm',
+      '#analogphotography',
+      '#pentax17',
+      '#halfframe',
+      '#ilfordhp5',
+    ]);
     expect(new Set(tags).size).toBe(tags.length);
   });
 
@@ -132,12 +134,16 @@ describe('formatInstagramCaption & syncHashtagsInCaptionText', () => {
     );
   });
 
-  it('formats digital mode captions with Settings and digital hashtags without film tags', () => {
+  it('formats digital mode captions with Settings and 5 sharp digital hashtags without film tags', () => {
     const tags = buildDefaultHashtags(DIGITAL_META, 'minimal-matte');
-    expect(tags.length).toBeGreaterThanOrEqual(8);
-    expect(tags.length).toBeLessThanOrEqual(12);
-    expect(tags).toContain('#digitalphotography');
-    expect(tags).toContain('#sonyalpha');
+    expect(tags.length).toBe(5);
+    expect(tags).toEqual([
+      '#streetphotography',
+      '#digitalphotography',
+      '#lightandshadow',
+      '#sonya7cii',
+      '#sonyalpha',
+    ]);
     expect(tags).not.toContain('#35mmfilm');
 
     const caption = formatInstagramCaption({

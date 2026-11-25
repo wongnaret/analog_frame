@@ -47,7 +47,7 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
 - Tap **Apply Gear to All** to copy `Capture Mode`, `Camera`, `Lens`, `Scanner`, `Film Stock`, `ISO`, and `Artist` across your whole batch while preserving each frame's individual date and frame number.
 
 ### Step 5: Generate & Copy IG Caption (`Caption` Tab)
-- Open the **Caption** tab to review your auto-generated Instagram caption (`Camera`, `Lens` when filled, plus `Film` + curated analog hashtags in **Film** mode, or `Settings: <focal · aperture · shutter · ISO>` + digital/camera hashtags in **Digital** mode).
+- Open the **Caption** tab to review your auto-generated Instagram caption (`Camera`, `Lens` when filled, plus `Film` + up to 5 sharp analog hashtags in **Film** mode, or `Settings: <focal · aperture · shutter · ISO>` + 5 digital/camera hashtags in **Digital** mode, tailored to Instagram's 5-tag limit).
 - Toggle **Opening Line** *(default OFF)* to add a stoic/vintage English opening line, pick a **Vibe / Mood** (`Auto`, `Stoic`, `Light`, `Street`, `Mechanical`, `Night`, `B&W`), shuffle lines, or optionally enter a personal **Gemini API Key (BYOK)** to analyze the photo directly from your browser.
 - Toggle **Include Scanner** *(default OFF)* if you want `Scanner:` included in the caption text.
 - Edit any text freely in the **Instagram Caption** textarea, click `×` on hashtag chips to remove tags, or add custom `#hashtags` (saved locally for quick reuse).

@@ -357,9 +357,14 @@ export function CaptionControls({
           </div>
           <span
             className="font-mono-tech text-[10px]"
-            style={{ color: 'var(--text-secondary)' }}
+            style={{
+              color:
+                draft.hashtags.length > 5
+                  ? 'var(--accent-amber)'
+                  : 'var(--text-secondary)',
+            }}
           >
-            {draft.hashtags.length} tags · {draft.text.length} chars
+            {draft.hashtags.length}/5 tags · {draft.text.length} chars
           </span>
         </div>
 
@@ -380,7 +385,7 @@ export function CaptionControls({
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-semibold uppercase tracking-wider">
-            Hashtags ({draft.hashtags.length})
+            Hashtags ({draft.hashtags.length}/5)
           </h3>
           <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
             Tap × to remove

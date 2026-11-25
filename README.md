@@ -10,7 +10,7 @@ A lean, 100% browser-side, mobile-first PWA for framing analog film scans and di
 - **Split Typography & Footer Watermark**: Mobile-readable labeled footer placing `CAMERA: ... · LENS: ...` and `SCANNER: ...` on the left with `FILM: ...` and `ISO: ...` on the right for film — or `CAMERA: ...` and `LENS: ...` on the left with `<FOCAL> · <APERTURE> · <SHUTTER>` and `ISO: ...` on the right for digital — paired with an editable footer watermark (`ANALOG FRAME` by default, remembered in `localStorage`).
 - **No-Crop Fit + Rotation**: Keeps your full frame intact with 90° rotation support.
 - **EXIF Read & Re-Inject**: Reads `Make`, `Model`, `LensModel`, `FocalLength`, `FNumber`, `ExposureTime`, `ISO`, `DateTimeOriginal`, `Artist`, and `Film: <stock> | EI: <iso>` tags, lets you fill missing fields with curated film presets & saved gear, and writes key EXIF back into exported JPEGs so photo libraries preserve shooting dates.
-- **IG Caption Generator (`@flk.analog`)**: Dedicated `Caption` tab generates ready-to-copy minimalist English captions and 8–12 curated camera/film or digital hashtags from EXIF (with optional Opening Line & Scanner toggles, editable hashtag chips, localStorage memory, and optional BYOK Gemini 2.5 Flash image analysis).
+- **IG Caption Generator (`@flk.analog`)**: Dedicated `Caption` tab generates ready-to-copy minimalist English captions and up to 5 sharp, curated camera/film or digital hashtags from EXIF (matching Instagram's 5-tag limit, with optional Opening Line & Scanner toggles, editable hashtag chips, localStorage memory, and optional BYOK Gemini 2.5 Flash image analysis).
 - **Mobile-First PWA**: Installable on iOS/Android, works offline, supports native **Web Share** ("Save Image") and **Batch ZIP** export.
 
 ## Quick Start

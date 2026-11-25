@@ -41,7 +41,7 @@ analog_frame/
 - **`src/core/presets/cookieConsent.ts`**: Persists and reads cookie/local-storage consent (`accepted` or `essential`) across `localStorage` and `document.cookie`.
 - **`src/core/renderer/layout.ts`**: Pure geometry (`computeCanvasLayout`, `fitRectInBox`, `getRotatedDimensions`, `drawRotatedImage`) ensuring zero-crop fitting at any scale.
 - **`src/core/templates/registry.ts`**: Central template registry (`TEMPLATES`, `getTemplate`). Adding a new frame style only requires implementing `FrameTemplate` and registering it here.
-- **`src/core/caption/`**: Modular Instagram caption engine (`hashtags.ts`, `openingLines.ts`, `generator.ts`, `storage.ts`, `geminiClient.ts`) producing `@flk.analog`-style captions, 8–12 dynamic camera/film hashtags, clipboard helpers, and optional browser-side BYOK Gemini 2.5 Flash vision generation.
+- **`src/core/caption/`**: Modular Instagram caption engine (`hashtags.ts`, `openingLines.ts`, `generator.ts`, `storage.ts`, `geminiClient.ts`) producing `@flk.analog`-style captions, up to 5 sharp camera/film or digital hashtags, clipboard helpers, and optional browser-side BYOK Gemini 2.5 Flash vision generation.
 - **`src/core/export/exporter.ts`**: Handles high-resolution rendering (`scale = 1`), EXIF re-injection, `navigator.share({ files })` on mobile, and sequential low-memory ZIP creation via `fflate`.
 
 ---

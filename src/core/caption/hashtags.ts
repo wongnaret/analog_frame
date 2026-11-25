@@ -1,23 +1,21 @@
 import type { PhotoMetadata, TemplateId } from '../types';
 
+export const MAX_IG_HASHTAGS = 5;
+
 export const CORE_ANALOG_HASHTAGS: string[] = [
   '#35mmfilm',
   '#analogphotography',
   '#filmphotography',
-  '#vintagecamera',
-  '#mechanicalcamera',
   '#believeinfilm',
-  '#filmcommunity',
+  '#vintagecamera',
 ];
 
 export const CORE_DIGITAL_HASHTAGS: string[] = [
-  '#photography',
-  '#digitalphotography',
   '#streetphotography',
-  '#visualstorytelling',
+  '#digitalphotography',
   '#lightandshadow',
   '#minimalphotography',
-  '#photocommunity',
+  '#visualstorytelling',
 ];
 
 const FILM_HASHTAG_MAP: Array<[RegExp, string]> = [
@@ -180,31 +178,40 @@ export function buildDigitalCameraHashtags(camera: string): string[] {
 }
 
 /**
- * Generates 8 to 12 curated hashtags tailored to Film (@flk.analog) or Digital mode.
+ * Generates up to 5 sharp, high-signal hashtags (Instagram mobile limit: 5).
+ * Prioritizes camera/format + film stock specificity, then fills remaining slots
+ * with curated core analog or digital tags.
  */
 export function buildDefaultHashtags(
   metadata: PhotoMetadata,
   templateId?: TemplateId,
 ): string[] {
   if (metadata.mode === 'digital') {
-    const cameraTags = buildDigitalCameraHashtags(metadata.camera);
-    const coreLimit = Math.max(5, Math.min(7, 12 - cameraTags.length));
+    const cameraTags = buildDigitalCameraHashtags(metadata.camera).slice(0, 2);
+    const coreLimit = Math.max(1, MAX_IG_HASHTAGS - cameraTags.length);
     const coreTags = CORE_DIGITAL_HASHTAGS.slice(0, coreLimit);
-    return dedupeHashtags([...coreTags, ...cameraTags]).slice(0, 12);
+    return dedupeHashtags([...coreTags, ...cameraTags]).slice(0, MAX_IG_HASHTAGS);
   }
 
-  const cameraTags = buildCameraHashtags(metadata.camera, templateId);
+  const cameraTags = buildCameraHashtags(metadata.camera, templateId).slice(0, 2);
   const filmTag = buildFilmHashtag(metadata.filmStock);
 
-  const nonCoreCount = cameraTags.length + (filmTag ? 1 : 0);
-  const coreLimit = Math.max(5, Math.min(7, 12 - nonCoreCount));
-  const coreTags = CORE_ANALOG_HASHTAGS.slice(0, coreLimit);
+  const isMediumFormat = cameraTags.some(
+    (tag) => tag === '#mediumformat' || tag === '#120film',
+  );
+  const corePool = isMediumFormat
+    ? CORE_ANALOG_HASHTAGS.filter((tag) => tag !== '#35mmfilm')
+    : CORE_ANALOG_HASHTAGS;
+
+  const specificCount = cameraTags.length + (filmTag ? 1 : 0);
+  const coreLimit = Math.max(1, MAX_IG_HASHTAGS - specificCount);
+  const coreTags = corePool.slice(0, coreLimit);
 
   return dedupeHashtags([
     ...coreTags,
     ...cameraTags,
     ...(filmTag ? [filmTag] : []),
-  ]).slice(0, 12);
+  ]).slice(0, MAX_IG_HASHTAGS);
 }
 
 export function extractHashtagsFromText(text: string): string[] {

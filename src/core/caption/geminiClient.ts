@@ -12,14 +12,10 @@ Tone & Style:
 - Mood: Stoic, cool, vintage, minimalist, and appreciative of mechanical/analog photography.
 - Language: English (concise and poetic, avoiding clichés, excessive emojis, or overly chatty remarks).
 
-Hashtag Selection Rules:
-1. Always include 5-7 core analog tags: #35mmfilm #analogphotography #filmphotography #vintagecamera #mechanicalcamera #believeinfilm #filmcommunity
-2. Dynamically append 3-5 camera-specific tags based on the camera:
-   - Praktica FX (or M42 vintage SLR): #praktica #prakticafx #m42lens #waistlevelfinder #vintageslr
-   - Nikon F3: #nikonf3 #nikonanalog #nikkorlens #nikonfilm
-   - Pentax 17 (or Half-frame): #pentax17 #halfframe #halfframecamera #pentaxfilm
-   - Other cameras: relevant model and format hashtags.
-3. Optional Film Tag: Include 1 hashtag for the specific film stock if provided (e.g., #ilfordhp5, #kodakvision3).
+Hashtag Selection Rules (Instagram max 5 hashtags — keep them sharp and high-signal):
+1. Select AT MOST 5 hashtags total (never exceed 5).
+2. Film mode mix: 2 core analog tags (e.g. #35mmfilm #analogphotography) + 2 sharp camera/format tags (e.g. #pentax17 #halfframe, #nikonf3 #nikkorlens, #prakticafx #m42lens) + 1 specific film stock tag if provided (e.g. #ilfordhp5, #kodakvision3).
+3. Digital mode mix: 3 sharp photography/mood tags (e.g. #streetphotography #digitalphotography #lightandshadow) + 2 camera/brand tags (e.g. #sonya7cii #sonyalpha).
 
 Constraints:
 - Do NOT include conversational filler (e.g., "Here is your caption:"). Output ONLY the ready-to-copy caption block.
@@ -88,7 +84,7 @@ export async function generateCaptionWithGemini({
       includeOpeningLine
         ? 'Include 1 short minimalist opening line (max 10 words) matching the attached photo before the metadata block.'
         : 'Omit the opening line; start directly with Camera:.',
-      'Use 8 to 12 digital/street/minimal photography hashtags (avoid 35mm film hashtags). Output ONLY the ready-to-copy Instagram caption block.',
+      'Use exactly 5 sharp digital/street/minimal photography hashtags (max 5, avoid 35mm film hashtags). Output ONLY the ready-to-copy Instagram caption block.',
     ].filter(Boolean)
     : [
       `Camera: ${metadata.camera.trim() || 'Unknown'}`,
@@ -101,7 +97,7 @@ export async function generateCaptionWithGemini({
       includeOpeningLine
         ? 'Include 1 short evocative opening line (max 10 words) matching the attached photo before the metadata block.'
         : 'Omit the opening line; start directly with Camera:.',
-      'Output ONLY the ready-to-copy Instagram caption block with 8 to 12 hashtags on the final line.',
+      'Output ONLY the ready-to-copy Instagram caption block with up to 5 sharp hashtags on the final line (max 5).',
     ].filter(Boolean);
 
   const response = await fetch(
@@ -164,8 +160,8 @@ export async function generateCaptionWithGemini({
 
   const parsedHashtags = extractHashtagsFromText(rawText);
   const hashtags =
-    parsedHashtags.length >= 5
-      ? parsedHashtags.slice(0, 12)
+    parsedHashtags.length >= 3
+      ? parsedHashtags.slice(0, 5)
       : buildDefaultHashtags(metadata, templateId);
 
   const firstParagraph = rawText.split(/\n\s*\n/)[0]?.trim() ?? '';

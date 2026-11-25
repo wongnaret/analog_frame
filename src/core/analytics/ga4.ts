@@ -9,7 +9,10 @@ import type {
   TemplateId,
 } from '../types';
 
-export const GA4_MEASUREMENT_ID = 'G-M9GZQSXXPH';
+export function getGa4MeasurementId(): string {
+  const raw = import.meta.env?.VITE_GA4_MEASUREMENT_ID;
+  return typeof raw === 'string' ? raw.trim() : '';
+}
 
 type GtagFn = (...args: unknown[]) => void;
 
@@ -40,7 +43,12 @@ export function sanitizeAnalyticsParam(
 }
 
 export function updateAnalyticsConsent(choice: CookieConsentChoice): void {
-  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+  const measurementId = getGa4MeasurementId();
+  if (
+    !measurementId ||
+    typeof window === 'undefined' ||
+    typeof window.gtag !== 'function'
+  ) {
     return;
   }
 
@@ -50,7 +58,7 @@ export function updateAnalyticsConsent(choice: CookieConsentChoice): void {
   });
 
   if (granted && isAnalyticsEnabledHost()) {
-    window.gtag('config', GA4_MEASUREMENT_ID, {
+    window.gtag('config', measurementId, {
       send_page_view: true,
     });
   }
@@ -60,7 +68,11 @@ export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean | undefined>,
 ): void {
-  if (typeof window === 'undefined' || typeof window.gtag !== 'function') {
+  if (
+    !getGa4MeasurementId() ||
+    typeof window === 'undefined' ||
+    typeof window.gtag !== 'function'
+  ) {
     return;
   }
   if (!isAnalyticsEnabledHost()) return;

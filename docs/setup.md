@@ -44,9 +44,10 @@ Because Analog Frame processes everything client-side, it only needs static file
    ```bash
    cp .env.example .env
    ```
-   Ensure `FIREBASE_PROJECT_ID` is set (default: `analog-frame`):
+   Ensure `FIREBASE_PROJECT_ID` is set (default: `analog-frame`), and optionally add `VITE_GA4_MEASUREMENT_ID` for Google Analytics 4:
    ```env
    FIREBASE_PROJECT_ID=analog-frame
+   VITE_GA4_MEASUREMENT_ID=G-XXXXXXXXXX
    ```
 3. **Authenticate & Deploy**:
    First sign in once with `firebase login`, then run the deployment script for your OS:

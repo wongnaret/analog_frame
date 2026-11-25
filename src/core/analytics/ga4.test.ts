@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { saveCookieConsent } from '../presets/cookieConsent';
 import type { PhotoItem } from '../types';
 import {
-  GA4_MEASUREMENT_ID,
+  getGa4MeasurementId,
   isAnalyticsEnabledHost,
   sanitizeAnalyticsParam,
   trackBatchZipExport,
@@ -74,6 +74,7 @@ describe('GA4 analytics helper', () => {
     gtagSpy.mockReset();
     window.gtag = gtagSpy;
     vi.stubGlobal('location', { ...window.location, hostname: 'frame.trailhub.in.th' });
+    vi.stubEnv('VITE_GA4_MEASUREMENT_ID', 'G-TEST123456');
   });
 
   it('blocks localhost hosts and enables production domain', () => {
@@ -105,7 +106,7 @@ describe('GA4 analytics helper', () => {
     expect(gtagSpy).toHaveBeenCalledWith('consent', 'update', {
       analytics_storage: 'granted',
     });
-    expect(gtagSpy).toHaveBeenCalledWith('config', GA4_MEASUREMENT_ID, {
+    expect(gtagSpy).toHaveBeenCalledWith('config', getGa4MeasurementId(), {
       send_page_view: true,
     });
 

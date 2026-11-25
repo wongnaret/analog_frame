@@ -80,29 +80,29 @@ export async function generateCaptionWithGemini({
 
   const lines = isDigital
     ? [
-        `Mode: Digital photography`,
-        `Camera: ${metadata.camera.trim() || 'Unknown'}`,
-        metadata.lens.trim() ? `Lens: ${metadata.lens.trim()}` : 'Lens: (omit line)',
-        digitalSettings ? `Settings: ${digitalSettings}` : '',
-        contextNote.trim() ? `Photo Context/Vibe: ${contextNote.trim()}` : '',
-        includeOpeningLine
-          ? 'Include 1 short minimalist opening line (max 10 words) matching the attached photo before the metadata block.'
-          : 'Omit the opening line; start directly with Camera:.',
-        'Use 8 to 12 digital/street/minimal photography hashtags (avoid 35mm film hashtags). Output ONLY the ready-to-copy Instagram caption block.',
-      ].filter(Boolean)
+      `Mode: Digital photography`,
+      `Camera: ${metadata.camera.trim() || 'Unknown'}`,
+      metadata.lens.trim() ? `Lens: ${metadata.lens.trim()}` : 'Lens: (omit line)',
+      digitalSettings ? `Settings: ${digitalSettings}` : '',
+      contextNote.trim() ? `Photo Context/Vibe: ${contextNote.trim()}` : '',
+      includeOpeningLine
+        ? 'Include 1 short minimalist opening line (max 10 words) matching the attached photo before the metadata block.'
+        : 'Omit the opening line; start directly with Camera:.',
+      'Use 8 to 12 digital/street/minimal photography hashtags (avoid 35mm film hashtags). Output ONLY the ready-to-copy Instagram caption block.',
+    ].filter(Boolean)
     : [
-        `Camera: ${metadata.camera.trim() || 'Unknown'}`,
-        metadata.lens.trim() ? `Lens: ${metadata.lens.trim()}` : 'Lens: (omit line)',
-        `Film Stock: ${metadata.filmStock.trim() || 'Unknown'}`,
-        includeScanner && metadata.scanner?.trim()
-          ? `Scanner: ${metadata.scanner.trim()}`
-          : 'Scanner: (omit line)',
-        contextNote.trim() ? `Photo Context/Vibe: ${contextNote.trim()}` : '',
-        includeOpeningLine
-          ? 'Include 1 short evocative opening line (max 10 words) matching the attached photo before the metadata block.'
-          : 'Omit the opening line; start directly with Camera:.',
-        'Output ONLY the ready-to-copy Instagram caption block with 8 to 12 hashtags on the final line.',
-      ].filter(Boolean);
+      `Camera: ${metadata.camera.trim() || 'Unknown'}`,
+      metadata.lens.trim() ? `Lens: ${metadata.lens.trim()}` : 'Lens: (omit line)',
+      `Film Stock: ${metadata.filmStock.trim() || 'Unknown'}`,
+      includeScanner && metadata.scanner?.trim()
+        ? `Scanner: ${metadata.scanner.trim()}`
+        : 'Scanner: (omit line)',
+      contextNote.trim() ? `Photo Context/Vibe: ${contextNote.trim()}` : '',
+      includeOpeningLine
+        ? 'Include 1 short evocative opening line (max 10 words) matching the attached photo before the metadata block.'
+        : 'Omit the opening line; start directly with Camera:.',
+      'Output ONLY the ready-to-copy Instagram caption block with 8 to 12 hashtags on the final line.',
+    ].filter(Boolean);
 
   const response = await fetch(
     `${GEMINI_ENDPOINT}?key=${encodeURIComponent(cleanKey)}`,

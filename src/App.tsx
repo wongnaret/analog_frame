@@ -75,6 +75,22 @@ export function App() {
     if (!selectedPhoto) return;
     setIsExporting(true);
     setStatusMessage('Rendering 2× Instagram frame...');
+
+    let captionCopied = false;
+    if (mode === 'share-or-download') {
+      captionCopied = await copyTextToClipboard(
+        captionManager.getCaptionForPhoto(selectedPhoto),
+      );
+      if (captionCopied) {
+        trackCaptionCopy({
+          photo: selectedPhoto,
+          hasOpeningLine: captionManager.prefs.includeOpeningLine,
+          hashtagCount: captionManager.draft?.hashtags.length ?? 0,
+          source: 'export_tab',
+        });
+      }
+    }
+
     try {
       const blob = await renderPhotoToExportBlob(
         selectedPhoto,
@@ -98,12 +114,15 @@ export function App() {
         });
       } else {
         const outcome = await shareOrDownloadBlob(blob, filename);
+        const prefix = captionCopied ? 'Caption copied · ' : '';
         setStatusMessage(
           outcome === 'shared'
-            ? `Shared ${filename}`
+            ? `${prefix}Shared ${filename}`
             : outcome === 'cancelled'
-              ? 'Share cancelled'
-              : `Saved ${filename}`,
+              ? captionCopied
+                ? 'Caption copied · Share cancelled'
+                : 'Share cancelled'
+              : `${prefix}Saved ${filename}`,
         );
         if (outcome !== 'cancelled') {
           trackFrameExport({

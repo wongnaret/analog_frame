@@ -57,8 +57,8 @@ Use the **-90° / +90° Rotate** buttons below the preview if a scan needs orien
 - Choose **JPEG (95%)** *(recommended)* or **PNG (Lossless)**.
 - Keep **Preserve EXIF in JPEG** enabled so saved photos retain their original shooting date and camera/film tags in Apple Photos or Google Photos.
 - **Single Photo**:
-  - On mobile (iOS/Android), tap **Save / Share Current Frame** to open the native share sheet and tap **Save Image**.
-  - On desktop, click **Save / Share Current Frame** or **Download File Directly**.
+  - On mobile (iOS/Android), tap **Copy Caption & Share Frame** to copy your IG caption to the clipboard and open the native share sheet directly to Instagram (or tap **Save Image**).
+  - On desktop, click **Copy Caption & Share Frame** or **Download File Directly**.
 - **Batch Carousel**:
   - Tap **Export All N Photos as ZIP** to render every photo in the queue at full resolution (`2160px` width) and download a single `.zip` archive.
 

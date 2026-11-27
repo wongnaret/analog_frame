@@ -141,8 +141,11 @@ export function ExportControls({
           style={{ backgroundColor: 'var(--accent-amber)' }}
         >
           <Share2 className="h-4 w-4" />
-          <span>Save / Share Current Frame</span>
+          <span>Copy Caption & Share Frame</span>
         </button>
+        <p className="text-center text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+          Copies your IG caption + opens the share sheet so you can paste directly in Instagram.
+        </p>
 
         <button
           type="button"

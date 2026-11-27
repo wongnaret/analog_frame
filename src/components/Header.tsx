@@ -1,6 +1,6 @@
 import { Coffee, Film, Moon, Plus, Sun } from 'lucide-react';
 import { useRef } from 'react';
-import { trackEvent } from '../core/analytics/ga4';
+import { trackSupportCoffeeClick } from '../core/analytics/ga4';
 
 const COFFEE_DONATION_URL = 'https://ezdn.app/trailhub';
 
@@ -84,11 +84,7 @@ export function Header({
             rel="noopener noreferrer"
             aria-label="Buy me a coffee on ezdn.app"
             title="Buy me a coffee (ezdn.app/trailhub)"
-            onClick={() =>
-              trackEvent('support_coffee_click', {
-                destination: 'ezdn.app/trailhub',
-              })
-            }
+            onClick={() => trackSupportCoffeeClick()}
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-black transition hover:brightness-105 active:scale-[0.98]"
             style={{ backgroundColor: 'var(--accent-amber)' }}
           >

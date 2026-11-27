@@ -14,9 +14,11 @@ import {
   trackBatchZipExport,
   trackCaptionCopy,
   trackCaptureModeSwitch,
+  trackDiptychPartnerSelect,
   trackFrameExport,
   trackPhotoUpload,
   trackTemplateSelect,
+  trackThemeToggle,
 } from './core/analytics/ga4';
 import { copyTextToClipboard } from './core/caption/generator';
 import {
@@ -86,7 +88,7 @@ export function App() {
           photo: selectedPhoto,
           hasOpeningLine: captionManager.prefs.includeOpeningLine,
           hashtagCount: captionManager.draft?.hashtags.length ?? 0,
-          source: 'export_tab',
+          source: 'copy_and_share',
         });
       }
     }
@@ -129,6 +131,7 @@ export function App() {
             photo: selectedPhoto,
             format: store.exportOptions.format,
             delivery: outcome === 'shared' ? 'share' : 'download',
+            withCaptionCopy: captionCopied,
           });
         }
       }
@@ -172,7 +175,11 @@ export function App() {
     <div className="min-h-screen pb-20 lg:pb-8">
       <Header
         theme={store.theme}
-        onToggleTheme={store.toggleTheme}
+        onToggleTheme={() => {
+          const nextTheme = store.theme === 'dark' ? 'light' : 'dark';
+          store.toggleTheme();
+          trackThemeToggle(nextTheme);
+        }}
         onAddFiles={(files) => void handleAddFiles(files)}
       />
 
@@ -250,12 +257,16 @@ export function App() {
                     store.updateSettings(selectedPhoto.id, { templateId });
                     trackTemplateSelect(templateId);
                   }}
-                  onSelectDiptychPartner={(diptychPartnerId) =>
-                    store.updateSettings(selectedPhoto.id, { diptychPartnerId })
-                  }
-                  onUploadDiptychPartner={(file) =>
-                    void store.addPartnerPhotoForSelected(file)
-                  }
+                  onSelectDiptychPartner={(diptychPartnerId) => {
+                    store.updateSettings(selectedPhoto.id, { diptychPartnerId });
+                    trackDiptychPartnerSelect(
+                      diptychPartnerId ? 'queue' : 'cleared',
+                    );
+                  }}
+                  onUploadDiptychPartner={(file) => {
+                    void store.addPartnerPhotoForSelected(file);
+                    trackDiptychPartnerSelect('upload');
+                  }}
                   onApplyTemplateToAll={() =>
                     store.applyTemplateToAll(selectedPhoto.id)
                   }

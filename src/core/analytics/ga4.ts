@@ -116,8 +116,9 @@ export function trackFrameExport(params: {
   photo: PhotoItem;
   format: ExportFormat;
   delivery: 'share' | 'download';
+  withCaptionCopy?: boolean;
 }): void {
-  const { photo, format, delivery } = params;
+  const { photo, format, delivery, withCaptionCopy } = params;
   const captureMode = photo.metadata.mode ?? 'film';
 
   trackEvent('export_frame', {
@@ -127,6 +128,7 @@ export function trackFrameExport(params: {
     capture_mode: captureMode,
     format,
     delivery,
+    with_caption_copy: Boolean(withCaptionCopy),
     camera: sanitizeAnalyticsParam(photo.metadata.camera),
     lens: sanitizeAnalyticsParam(photo.metadata.lens),
     film_stock:
@@ -163,7 +165,7 @@ export function trackCaptionCopy(params: {
   photo: PhotoItem;
   hasOpeningLine: boolean;
   hashtagCount: number;
-  source: 'caption_tab' | 'export_tab';
+  source: 'caption_tab' | 'export_tab' | 'copy_and_share';
 }): void {
   const { photo, hasOpeningLine, hashtagCount, source } = params;
   const captureMode = photo.metadata.mode ?? 'film';
@@ -179,5 +181,37 @@ export function trackCaptionCopy(params: {
       captureMode === 'film'
         ? sanitizeAnalyticsParam(photo.metadata.filmStock)
         : undefined,
+  });
+}
+
+export function trackDiptychPartnerSelect(
+  partnerSource: 'queue' | 'upload' | 'cleared',
+): void {
+  trackEvent('select_diptych_partner', {
+    partner_source: partnerSource,
+  });
+}
+
+export function trackAiCaptionGenerate(params: {
+  captureMode: PhotoMode;
+  hasContextNote: boolean;
+  status: 'success' | 'error';
+}): void {
+  trackEvent('generate_ai_caption', {
+    capture_mode: params.captureMode,
+    has_context_note: params.hasContextNote,
+    status: params.status,
+  });
+}
+
+export function trackSupportCoffeeClick(): void {
+  trackEvent('support_coffee_click', {
+    destination: 'ezdn.app/trailhub',
+  });
+}
+
+export function trackThemeToggle(theme: 'dark' | 'light'): void {
+  trackEvent('toggle_theme', {
+    theme,
   });
 }

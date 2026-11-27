@@ -3,6 +3,7 @@ import {
   formatInstagramCaption,
   syncHashtagsInCaptionText,
 } from '../core/caption/generator';
+import { trackAiCaptionGenerate } from '../core/analytics/ga4';
 import { generateCaptionWithGemini } from '../core/caption/geminiClient';
 import {
   buildDefaultHashtags,
@@ -330,12 +331,14 @@ export function useCaptionManager(selectedPhoto: PhotoItem | null) {
     if (!selectedPhoto) return;
     setAiError(null);
     setIsGeneratingAi(true);
+    const current = resolvePhotoDraft(
+      selectedPhoto,
+      prefs,
+      drafts[selectedPhoto.id],
+    );
+    const captureMode = selectedPhoto.metadata.mode ?? 'film';
+    const hasContextNote = Boolean(current.contextNote.trim());
     try {
-      const current = resolvePhotoDraft(
-        selectedPhoto,
-        prefs,
-        drafts[selectedPhoto.id],
-      );
       const result = await generateCaptionWithGemini({
         apiKey: prefs.geminiApiKey,
         objectUrl: selectedPhoto.objectUrl,
@@ -357,10 +360,20 @@ export function useCaptionManager(selectedPhoto: PhotoItem | null) {
           isManuallyEdited: false,
         },
       }));
+      trackAiCaptionGenerate({
+        captureMode,
+        hasContextNote,
+        status: 'success',
+      });
     } catch (error) {
       setAiError(
         error instanceof Error ? error.message : 'Failed to generate AI caption',
       );
+      trackAiCaptionGenerate({
+        captureMode,
+        hasContextNote,
+        status: 'error',
+      });
     } finally {
       setIsGeneratingAi(false);
     }

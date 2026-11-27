@@ -5,10 +5,14 @@ import {
   getGa4MeasurementId,
   isAnalyticsEnabledHost,
   sanitizeAnalyticsParam,
+  trackAiCaptionGenerate,
   trackBatchZipExport,
   trackCaptionCopy,
+  trackDiptychPartnerSelect,
   trackFrameExport,
   trackPhotoUpload,
+  trackSupportCoffeeClick,
+  trackThemeToggle,
   updateAnalyticsConsent,
 } from './ga4';
 
@@ -115,6 +119,7 @@ describe('GA4 analytics helper', () => {
       photo: SAMPLE_PHOTO,
       format: 'jpeg',
       delivery: 'download',
+      withCaptionCopy: true,
     });
 
     expect(gtagSpy).toHaveBeenCalledWith('event', 'export_frame', {
@@ -124,6 +129,7 @@ describe('GA4 analytics helper', () => {
       capture_mode: 'film',
       format: 'jpeg',
       delivery: 'download',
+      with_caption_copy: true,
       camera: 'Pentax 17',
       lens: '25mm F3.5',
       film_stock: 'Ilford HP5 Plus 400',
@@ -165,6 +171,31 @@ describe('GA4 analytics helper', () => {
       source: 'caption_tab',
       camera: 'Pentax 17',
       film_stock: 'Ilford HP5 Plus 400',
+    });
+
+    gtagSpy.mockClear();
+    trackDiptychPartnerSelect('queue');
+    trackAiCaptionGenerate({
+      captureMode: 'film',
+      hasContextNote: true,
+      status: 'success',
+    });
+    trackSupportCoffeeClick();
+    trackThemeToggle('light');
+
+    expect(gtagSpy).toHaveBeenCalledWith('event', 'select_diptych_partner', {
+      partner_source: 'queue',
+    });
+    expect(gtagSpy).toHaveBeenCalledWith('event', 'generate_ai_caption', {
+      capture_mode: 'film',
+      has_context_note: true,
+      status: 'success',
+    });
+    expect(gtagSpy).toHaveBeenCalledWith('event', 'support_coffee_click', {
+      destination: 'ezdn.app/trailhub',
+    });
+    expect(gtagSpy).toHaveBeenCalledWith('event', 'toggle_theme', {
+      theme: 'light',
     });
   });
 });

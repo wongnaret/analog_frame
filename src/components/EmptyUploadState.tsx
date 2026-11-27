@@ -1,4 +1,4 @@
-import { Camera, Film, Sparkles, Upload } from 'lucide-react';
+import { Camera, Film, ShieldCheck, Sparkles, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 interface EmptyUploadStateProps {
@@ -75,14 +75,14 @@ export function EmptyUploadState({
         </div>
 
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Drop your film scans here
+          Drop your film scans or photos here
         </h2>
         <p
           className="mx-auto mt-2 max-w-md text-sm"
           style={{ color: 'var(--text-secondary)' }}
         >
           Upload one frame or an entire IG Carousel set. EXIF camera, lens,
-          film, and scanner metadata is read automatically inside your browser.
+          film, and exposure metadata is read automatically inside your browser.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -109,6 +109,27 @@ export function EmptyUploadState({
             <Sparkles className="h-4 w-4" style={{ color: 'var(--accent-amber)' }} />
             <span>Try Sample Film Photo</span>
           </button>
+        </div>
+
+        <div
+          className="mx-auto mt-6 inline-flex max-w-lg items-center gap-2 rounded-xl border px-3.5 py-2 text-left text-xs"
+          style={{
+            backgroundColor: 'var(--bg-elevated)',
+            borderColor: 'var(--border-subtle)',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          <ShieldCheck
+            className="h-4 w-4 shrink-0"
+            style={{ color: 'var(--accent-amber)' }}
+          />
+          <span>
+            <strong style={{ color: 'var(--text-primary)' }}>
+              100% Client-Side & Private:
+            </strong>{' '}
+            All processing runs locally in your browser. Your photos are never
+            uploaded or saved to any server.
+          </span>
         </div>
       </div>
 

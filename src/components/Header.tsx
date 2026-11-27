@@ -1,22 +1,19 @@
-import { Film, Moon, Plus, Sun, Download } from 'lucide-react';
+import { Coffee, Film, Moon, Plus, Sun } from 'lucide-react';
 import { useRef } from 'react';
+import { trackEvent } from '../core/analytics/ga4';
+
+const COFFEE_DONATION_URL = 'https://ezdn.app/trailhub';
 
 interface HeaderProps {
-  photoCount: number;
   theme: 'dark' | 'light';
   onToggleTheme: () => void;
   onAddFiles: (files: FileList) => void;
-  onQuickExport: () => void;
-  isExporting: boolean;
 }
 
 export function Header({
-  photoCount,
   theme,
   onToggleTheme,
   onAddFiles,
-  onQuickExport,
-  isExporting,
 }: HeaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -81,18 +78,23 @@ export function Header({
             <span>Add Photos</span>
           </button>
 
-          {photoCount > 0 && (
-            <button
-              type="button"
-              disabled={isExporting}
-              onClick={onQuickExport}
-              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-black transition hover:brightness-105 active:scale-[0.98] disabled:opacity-50"
-              style={{ backgroundColor: 'var(--accent-amber)' }}
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Save Frame</span>
-            </button>
-          )}
+          <a
+            href={COFFEE_DONATION_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Buy me a coffee on ezdn.app"
+            title="Buy me a coffee (ezdn.app/trailhub)"
+            onClick={() =>
+              trackEvent('support_coffee_click', {
+                destination: 'ezdn.app/trailhub',
+              })
+            }
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-black transition hover:brightness-105 active:scale-[0.98]"
+            style={{ backgroundColor: 'var(--accent-amber)' }}
+          >
+            <Coffee className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Buy Me a Coffee</span>
+          </a>
 
           <button
             type="button"

@@ -171,12 +171,9 @@ export function App() {
   return (
     <div className="min-h-screen pb-20 lg:pb-8">
       <Header
-        photoCount={store.photos.length}
         theme={store.theme}
         onToggleTheme={store.toggleTheme}
         onAddFiles={(files) => void handleAddFiles(files)}
-        onQuickExport={() => void handleExportCurrent('share-or-download')}
-        isExporting={isExporting}
       />
 
       {!selectedPhoto ? (

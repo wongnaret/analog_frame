@@ -180,7 +180,7 @@ describe('GA4 analytics helper', () => {
       hasContextNote: true,
       status: 'success',
     });
-    trackSupportCoffeeClick();
+    trackSupportCoffeeClick('https://example.com/coffee');
     trackThemeToggle('light');
 
     expect(gtagSpy).toHaveBeenCalledWith('event', 'select_diptych_partner', {
@@ -192,7 +192,7 @@ describe('GA4 analytics helper', () => {
       status: 'success',
     });
     expect(gtagSpy).toHaveBeenCalledWith('event', 'support_coffee_click', {
-      destination: 'ezdn.app/trailhub',
+      destination: 'https://example.com/coffee',
     });
     expect(gtagSpy).toHaveBeenCalledWith('event', 'toggle_theme', {
       theme: 'light',

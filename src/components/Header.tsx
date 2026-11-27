@@ -2,7 +2,7 @@ import { Coffee, Film, Moon, Plus, Sun } from 'lucide-react';
 import { useRef } from 'react';
 import { trackSupportCoffeeClick } from '../core/analytics/ga4';
 
-const COFFEE_DONATION_URL = 'https://ezdn.app/trailhub';
+const COFFEE_DONATION_URL = (import.meta.env.VITE_COFFEE_URL ?? '').trim();
 
 interface HeaderProps {
   theme: 'dark' | 'light';
@@ -78,19 +78,21 @@ export function Header({
             <span>Add Photos</span>
           </button>
 
-          <a
-            href={COFFEE_DONATION_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Buy me a coffee on ezdn.app"
-            title="Buy me a coffee (ezdn.app/trailhub)"
-            onClick={() => trackSupportCoffeeClick()}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-black transition hover:brightness-105 active:scale-[0.98]"
-            style={{ backgroundColor: 'var(--accent-amber)' }}
-          >
-            <Coffee className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Buy Me a Coffee</span>
-          </a>
+          {COFFEE_DONATION_URL && (
+            <a
+              href={COFFEE_DONATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Buy me a coffee"
+              title="Buy me a coffee"
+              onClick={() => trackSupportCoffeeClick(COFFEE_DONATION_URL)}
+              className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-black transition hover:brightness-105 active:scale-[0.98]"
+              style={{ backgroundColor: 'var(--accent-amber)' }}
+            >
+              <Coffee className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Buy Me a Coffee</span>
+            </a>
+          )}
 
           <button
             type="button"

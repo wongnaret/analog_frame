@@ -204,9 +204,9 @@ export function trackAiCaptionGenerate(params: {
   });
 }
 
-export function trackSupportCoffeeClick(): void {
+export function trackSupportCoffeeClick(destination?: string): void {
   trackEvent('support_coffee_click', {
-    destination: 'ezdn.app/trailhub',
+    destination: sanitizeAnalyticsParam(destination),
   });
 }
 
